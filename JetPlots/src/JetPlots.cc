@@ -49,8 +49,8 @@ dbe_=0;
   dbe_ = Service<DaqMonitorBEInterface>().operator->();
 
   //We put this here for the moment since there is no better place 
-  edm::Service<MonitorDaemon> daemon;
-  daemon.operator->();
+  //edm::Service<MonitorDaemon> daemon;
+  //daemon.operator->();
 
 
 me_ptHatAll=0;
@@ -153,6 +153,8 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
     if (me_phiGen) me_phiGen->Fill( gen->phi() );
     jetInd++;
   }
+
+usleep(1000000);
 
 }
 
