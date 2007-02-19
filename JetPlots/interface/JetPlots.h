@@ -19,16 +19,24 @@ protected:
 
 private:
   std::string CaloJetAlgorithm, GenJetAlgorithm,label_;
-  TH1F h_ptCal, h_etaCal, h_phiCal;
-  TH1F h_ptGenAll, h_ptGenLow, h_ptGenAllEtaB, h_ptGenLowEtaB;
-  TH1F h_ptGenAllEtaBE, h_ptGenLowEtaBE, h_ptGenAllEtaE, h_ptGenLowEtaE;
-  TH1F h_ptGenAllEtaEF, h_ptGenLowEtaEF,h_ptGenAllEtaF,h_ptGenLowEtaF;
-  TH1F h_etaGen, h_etaGenLowpt, h_phiGen, h_;
-  TH1F h_ptHatAll,h_ptHatLow;
-  TFile* m_file;
   DaqMonitorBEInterface* dbe_;
   MonitorElement* me_ptHatAll;
   MonitorElement* me_ptHatLow;
+  MonitorElement* me_ptGenAll;
+  MonitorElement* me_ptGenLow;
+  MonitorElement* me_ptGenAllEtaB;
+  MonitorElement* me_ptGenLowEtaB;
+  MonitorElement* me_ptGenAllEtaBE;
+  MonitorElement* me_ptGenLowEtaBE;
+  MonitorElement* me_ptGenAllEtaE;
+  MonitorElement* me_ptGenLowEtaE;
+  MonitorElement* me_ptGenAllEtaEF;
+  MonitorElement* me_ptGenLowEtaEF;
+  MonitorElement* me_ptGenAllEtaF;
+  MonitorElement* me_ptGenLowEtaF;
+  MonitorElement* me_etaGen;
+  MonitorElement* me_etaGenLowpt;
+  MonitorElement* me_phiGen;
 };
 
 #endif

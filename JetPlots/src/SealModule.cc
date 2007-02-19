@@ -5,9 +5,6 @@
 #include "DQMServices/Daemon/interface/MonitorDaemon.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
-
-#include <TH1.h>
-#include <TFile.h>
 #include "RecoJets/JetPlots/interface/JetPlots.h"
  
 DEFINE_SEAL_MODULE();
