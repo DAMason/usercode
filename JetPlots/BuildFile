@@ -1,0 +1,37 @@
+<use name=root>
+<use name=Geometry/CaloGeometry>
+<use name=Geometry/CaloEventSetup>
+<use name=Geometry/Records>
+<use name=DataFormats/JetReco>
+<use name=DataFormats/HepMCCandidate>
+<use name=DataFormats/CaloTowers>
+<use name=DataFormats/HcalRecHit>
+<use name=DataFormats/HcalDigi>
+<use name=DataFormats/HcalDetId>
+<use name=TBDataFormats/HcalTBObjects>
+<use name=SimDataFormats/HepMCProduct>
+<use name=FWCore/Framework>
+<use name=DQMServices/CoreROOT>
+<use name=DQMServices/Daemon>
+<use name=Foundation/PluginManager>
+<use name=FWCore/ParameterSet>
+<flags SEAL_PLUGIN_NAME="RecoJetsJetPlots">
+<export>
+   <lib name=RecoJetsJetPlots>
+   <use name=root>
+   <use name=Geometry/CaloGeometry>
+   <use name=Geometry/Records>
+   <use name=Geometry/CaloEventSetup>
+   <use name=DataFormats/JetReco>
+   <use name=DataFormats/HepMCCandidate>
+   <use name=DataFormats/HcalRecHit>
+   <use name=DataFormats/HcalDigi>
+   <use name=DataFormats/HcalDetId>
+   <use name=TBDataFormats/HcalTBObjects>
+   <use name=SimDataFormats/HepMCProduct>
+   <use name=FWCore/Framework>
+   <use name=DQMServices/CoreROOT>
+   <use name=DQMServices/Daemon>
+   <use name=Foundation/PluginManager>
+   <use name=FWCore/ParameterSet>
+</export>
