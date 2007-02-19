@@ -1,0 +1,6 @@
+
+<bin file=DQMWatchertest.cpp>
+<use name=DQMServices/NodeROOT>
+<use name=DQMServices/UI>
+</bin>
+
