@@ -1,0 +1,2 @@
+link this guy in with another package -- i.e. from the CMSSW src:
+ln -s UserCode/DMason/JetPlots RecoJets/JetPlots
