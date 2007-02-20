@@ -154,7 +154,7 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
     jetInd++;
   }
 
-usleep(1000000);
+usleep(100000);
 
 }
 
