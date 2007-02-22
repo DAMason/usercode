@@ -53,6 +53,9 @@ dbe_=0;
   //daemon.operator->();
 
 
+
+
+
 me_ptHatAll=0;
 me_ptHatLow=0;
 
@@ -81,6 +84,15 @@ if (dbe_) {
 void JetPlots::analyze( const Event& evt, const EventSetup& es) {
 
 
+  float PtLowEdge[21]={0,15,20,30,50,80,120,170,230,300,380,470,600,800,1000,1400,1800,2200,2600,3000,3500};
+  float PtHiEdge[21]={15,20,30,50,80,120,170,230,300,380,470,600,800,1000,1400,1800,2200,2600,3000,3500,14000};
+  float BinXsec[21]={5.52E+01,1.46E+00,6.32E-01,1.63E-01,2.16E-02,3.08E-03,4.94E-04,1.01E-04,2.45E-05,6.24E-06,1.78E-06,6.83E-07,2.04E-07,3.51E-08,1.09E-08,1.06E-09,1.45E-10,2.38E-11,4.29E-12,8.44E-13,1.08E-13};
+
+  int CurrPtBin=0;
+  float BinWt=0.;
+
+
+
   //Get HepMC stuff
 
     Handle<HepMCProduct> mcTruth;
@@ -97,8 +109,17 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
 
   //std::cout<<"ProcessID was "<<procid<<" and scale was "<<evtscale<<" GeV "<<endl;
 
-  if (me_ptHatAll) me_ptHatAll->Fill(evtscale);
-  if (me_ptHatLow) me_ptHatLow->Fill(evtscale);
+
+  for (int j=0;j<21;j++) {
+    if (evtscale>PtLowEdge[j]&&evtscale<=PtHiEdge[j]) {
+      CurrPtBin=j;
+      BinWt=BinXsec[j];
+    }
+  }
+
+
+  if (me_ptHatAll) me_ptHatAll->Fill(evtscale,BinWt);
+  if (me_ptHatLow) me_ptHatLow->Fill(evtscale,BinWt);
 
 
 
@@ -123,34 +144,34 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
   //Loop over the two leading GenJets and fill some histograms
   jetInd = 0;
   for( GenJetCollection::const_iterator gen = genJets->begin(); gen != genJets->end() && jetInd<2; ++ gen ) {
-    if (me_ptGenAll) me_ptGenAll->Fill( gen->pt() );  
-    if (me_ptGenLow) me_ptGenLow->Fill( gen->pt() ); 
+    if (me_ptGenAll) me_ptGenAll->Fill( gen->pt(),BinWt );  
+    if (me_ptGenLow) me_ptGenLow->Fill( gen->pt(),BinWt ); 
     if (abs(gen->eta())<1) {
-           if (me_ptGenAllEtaB) me_ptGenAllEtaB->Fill( gen->pt() );  
-           if (me_ptGenLowEtaB) me_ptGenLowEtaB->Fill( gen->pt() ); 
+           if (me_ptGenAllEtaB) me_ptGenAllEtaB->Fill( gen->pt(),BinWt );  
+           if (me_ptGenLowEtaB) me_ptGenLowEtaB->Fill( gen->pt(),BinWt ); 
     }
     if (abs(gen->eta())>=1&&abs(gen->eta())<1.5) {
-           if (me_ptGenAllEtaBE) me_ptGenAllEtaBE->Fill( gen->pt() );  
-           if (me_ptGenLowEtaBE) me_ptGenLowEtaBE->Fill( gen->pt() ); 
+           if (me_ptGenAllEtaBE) me_ptGenAllEtaBE->Fill( gen->pt(),BinWt );  
+           if (me_ptGenLowEtaBE) me_ptGenLowEtaBE->Fill( gen->pt(),BinWt ); 
     }
     if (abs(gen->eta())>=1.5&&abs(gen->eta())<2.5) {
-           if (me_ptGenAllEtaE) me_ptGenAllEtaE->Fill( gen->pt() );  
-           if (me_ptGenLowEtaE) me_ptGenLowEtaE->Fill( gen->pt() ); 
+           if (me_ptGenAllEtaE) me_ptGenAllEtaE->Fill( gen->pt(),BinWt );  
+           if (me_ptGenLowEtaE) me_ptGenLowEtaE->Fill( gen->pt(),BinWt ); 
     }
     if (abs(gen->eta())>=2.5&&abs(gen->eta())<3) {
-           if (me_ptGenAllEtaEF) me_ptGenAllEtaEF->Fill( gen->pt() );  
-           if (me_ptGenAllEtaEF) me_ptGenLowEtaEF->Fill( gen->pt() ); 
+           if (me_ptGenAllEtaEF) me_ptGenAllEtaEF->Fill( gen->pt(),BinWt );  
+           if (me_ptGenAllEtaEF) me_ptGenLowEtaEF->Fill( gen->pt(),BinWt ); 
     }
     if (abs(gen->eta())>=3&&abs(gen->eta())<5) {
-           if (me_ptGenAllEtaF) me_ptGenAllEtaF->Fill( gen->pt() );  
-           if (me_ptGenLowEtaF) me_ptGenLowEtaF->Fill( gen->pt() ); 
+           if (me_ptGenAllEtaF) me_ptGenAllEtaF->Fill( gen->pt(),BinWt );  
+           if (me_ptGenLowEtaF) me_ptGenLowEtaF->Fill( gen->pt(),BinWt ); 
     }
 
-    if (me_etaGen) me_etaGen->Fill( gen->eta() );
+    if (me_etaGen) me_etaGen->Fill( gen->eta(),BinWt );
     if (gen->pt()<1000) {
-      if (me_etaGenLowpt) me_etaGenLowpt->Fill(gen->eta());
+      if (me_etaGenLowpt) me_etaGenLowpt->Fill(gen->eta(),BinWt);
     }
-    if (me_phiGen) me_phiGen->Fill( gen->phi() );
+    if (me_phiGen) me_phiGen->Fill( gen->phi(),BinWt );
     jetInd++;
   }
 
