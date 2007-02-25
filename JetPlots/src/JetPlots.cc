@@ -26,6 +26,7 @@
 #include "DataFormats/JetReco/interface/GenJet.h"
 #include <cmath>
 #include <iostream>
+#include <map>
 #include "RecoJets/JetPlots/interface/JetPlots.h"
 using namespace edm;
 using namespace reco;

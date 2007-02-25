@@ -8,6 +8,8 @@
  *
  */
 
+
+
 class JetPlots : public edm::EDAnalyzer {
 public:
   JetPlots( const edm::ParameterSet & );
@@ -18,6 +20,7 @@ protected:
   void endJob();
 
 private:
+
   std::string CaloJetAlgorithm, GenJetAlgorithm,label_;
   DaqMonitorBEInterface* dbe_;
   MonitorElement* me_ptHatAll;
@@ -37,6 +40,10 @@ private:
   MonitorElement* me_etaGen;
   MonitorElement* me_etaGenLowpt;
   MonitorElement* me_phiGen;
-};
 
+
+  typedef std::map< char*, int > maptype;
+  maptype meRegistry;
+
+};
 #endif
