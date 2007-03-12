@@ -16,11 +16,13 @@ public:
 
 protected:
   void beginJob( const edm::EventSetup & );
+  void bookBinnedMEs ( int );
   void analyze( const edm::Event& , const edm::EventSetup& );
   void endJob();
 
 private:
-
+  
+  bool BinIsBooked[21];
   std::string CaloJetAlgorithm, GenJetAlgorithm,label_;
   DaqMonitorBEInterface* dbe_;
   MonitorElement* me_ptHatAll;
@@ -44,6 +46,14 @@ private:
 
   typedef std::map< char*, int > maptype;
   maptype meRegistry;
+
+  typedef std::map< int, MonitorElement* > BinnedMEset;
+
+  BinnedMEset me_binned_ptHatAll;
+  BinnedMEset me_binned_ptGenAll; 
+
+
+
 
 };
 #endif

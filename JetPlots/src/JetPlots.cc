@@ -26,6 +26,7 @@
 #include "DataFormats/JetReco/interface/GenJet.h"
 #include <cmath>
 #include <iostream>
+#include <stdio.h>
 #include <map>
 #include "RecoJets/JetPlots/interface/JetPlots.h"
 using namespace edm;
@@ -38,9 +39,14 @@ JetPlots::JetPlots( const ParameterSet & cfg ) :
   CaloJetAlgorithm( cfg.getParameter<string>( "CaloJetAlgorithm" ) ), 
   GenJetAlgorithm( cfg.getParameter<string>( "GenJetAlgorithm" ) )
   {
-}
+  }
 
 void JetPlots::beginJob( const EventSetup & ) {
+
+for (int ii=0;ii<21;ii++) {
+     BinIsBooked[ii]=false;
+}
+
 
 // Hook into DQM interface...
 
@@ -79,8 +85,38 @@ if (dbe_) {
     me_etaGen=dbe_->book1D( "etaGen", "#eta of leading GenJets", 100, -5, 5 );
     me_etaGenLowpt=dbe_->book1D( "etaGenLowpt", "#eta of Low p_{T} leading GenJets", 100, -5, 5 );
     me_phiGen=dbe_->book1D( "phiGen", "#phi of leading GenJets", 60, -M_PI, M_PI );
+
+    //    for (int i=1;i<21;i++) {
+    // sprintf (histoname,"ptHatAllBinned%i",i);
+    // me_binned_ptHatAll[i]=dbe_->book1D( histoname,  "p_{T}hat for process", 80, 0, 8000 );
+    //}
+
+     if (me_binned_ptHatAll.count(3)==0) {
+      cout << "me_binned_ptHatAll[3] is being booked" << endl;
+      bookBinnedMEs(3);
+     } else if (me_binned_ptHatAll.count(3)>1) {
+       cout << "me_binned_ptHatAll[3] has more than one key" << endl;
+     }
+
+
   }
 }
+
+void JetPlots::bookBinnedMEs(int binNum) {
+  
+ char histoname[37] = "";
+
+ sprintf (histoname,"ptHatAllBin%i",binNum);
+ cout << "Booking " << histoname << endl;
+ me_binned_ptHatAll[binNum]=dbe_->book1D( histoname,  "p_{T}hat for process", 80, 0, 8000 );
+ sprintf (histoname,"ptGenAllBin%i",binNum);
+ cout << "Booking " << histoname << endl;
+ me_binned_ptGenAll[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets", 80, 0, 8000 );
+
+ 
+
+}
+
 
 void JetPlots::analyze( const Event& evt, const EventSetup& es) {
 
@@ -117,6 +153,13 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
       BinWt=BinXsec[j];
     }
   }
+
+  if (!BinIsBooked[CurrPtBin]){
+    bookBinnedMEs(CurrPtBin);
+    BinIsBooked[CurrPtBin]=true;
+      }
+
+  if (me_binned_ptHatAll[CurrPtBin])me_binned_ptHatAll[CurrPtBin]->Fill(evtscale,BinWt);   
 
 
   if (me_ptHatAll) me_ptHatAll->Fill(evtscale,BinWt);
