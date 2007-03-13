@@ -60,43 +60,20 @@ dbe_=0;
   //daemon.operator->();
 
 
-
-
-
-me_ptHatAll=0;
-me_ptHatLow=0;
-
 if (dbe_) {
     dbe_->setCurrentFolder("JetPlots");
-    me_ptHatAll=dbe_->book1D( "ptHatAll",  "p_{T}hat for process", 80, 0, 8000 );
-    me_ptHatLow = dbe_->book1D( "ptHatLow",  "p_{T}hat for process (Lower p_{T})", 200, 0, 1000 );
-    me_ptGenAll=dbe_->book1D( "ptGenAll",  "p_{T} for leading genjets", 80, 0, 8000 );
-    me_ptGenLow = dbe_->book1D( "ptGenLow",  "p_{T} for leading genjets (Lower p_{T})", 200, 0, 1000 );
-    me_ptGenAllEtaB=dbe_->book1D( "ptGenAllEtaB",  "p_{T} for leadkng genjets #eta<1", 80, 0, 8000 );
-    me_ptGenLowEtaB=dbe_->book1D( "ptGenLowEtaB",  "p_{T} for leading genjets #eta<1 (Lower p_{T})", 200, 0, 1000 );
-    me_ptGenAllEtaBE=dbe_->book1D( "ptGenAllEtaBE",  "p_{T} for leading genjets 1<#eta<1.5", 80, 0, 8000 );
-    me_ptGenLowEtaBE=dbe_->book1D( "ptGenLowEtaBE",  "p_{T} for leading genjets 1<#eta<1.5 (Lower p_{T})", 200, 0, 1000 );
-    me_ptGenAllEtaE=dbe_->book1D( "ptGenAllEtaE",  "p_{T} for leading genjets 1.5<#eta<2.5", 80, 0, 8000 );
-    me_ptGenLowEtaE=dbe_->book1D( "ptGenLowEtaE",  "p_{T} for leading genjets 1.5<#eta<2.5 (Lower p_{T})", 200, 0, 1000 );
-    me_ptGenAllEtaEF=dbe_->book1D( "ptGenAllEtaEF",  "p_{T} for leading genjets 2.5<#eta<3", 80, 0, 8000 );
-    me_ptGenLowEtaEF=dbe_->book1D( "ptGenLowEtaEF",  "p_{T} for leading genjets 2.5<#eta<3 (Lower p_{T})", 200, 0, 1000 );
-    me_ptGenAllEtaF=dbe_->book1D( "ptGenAllEtaF",  "p_{T} for leading genjets 3<#eta<5", 80, 0, 8000 );
-    me_ptGenLowEtaF=dbe_->book1D( "ptGenLowEtaF",  "p_{T} for leading genjets 3<#eta<5 (Lower p_{T})", 200, 0, 1000 );
-    me_etaGen=dbe_->book1D( "etaGen", "#eta of leading GenJets", 100, -5, 5 );
-    me_etaGenLowpt=dbe_->book1D( "etaGenLowpt", "#eta of Low p_{T} leading GenJets", 100, -5, 5 );
-    me_phiGen=dbe_->book1D( "phiGen", "#phi of leading GenJets", 60, -M_PI, M_PI );
 
     //    for (int i=1;i<21;i++) {
     // sprintf (histoname,"ptHatAllBinned%i",i);
     // me_binned_ptHatAll[i]=dbe_->book1D( histoname,  "p_{T}hat for process", 80, 0, 8000 );
     //}
 
-     if (me_binned_ptHatAll.count(3)==0) {
-      cout << "me_binned_ptHatAll[3] is being booked" << endl;
-      bookBinnedMEs(3);
-     } else if (me_binned_ptHatAll.count(3)>1) {
-       cout << "me_binned_ptHatAll[3] has more than one key" << endl;
-     }
+    // if (me_binned_ptHatAll.count(3)==0) {
+    //  cout << "me_binned_ptHatAll[3] is being booked" << endl;
+    //  bookBinnedMEs(3);
+    // } else if (me_binned_ptHatAll.count(3)>1) {
+    //   cout << "me_binned_ptHatAll[3] has more than one key" << endl;
+    // }
 
 
   }
@@ -107,13 +84,39 @@ void JetPlots::bookBinnedMEs(int binNum) {
  char histoname[37] = "";
 
  sprintf (histoname,"ptHatAllBin%i",binNum);
- cout << "Booking " << histoname << endl;
- me_binned_ptHatAll[binNum]=dbe_->book1D( histoname,  "p_{T}hat for process", 80, 0, 8000 );
- sprintf (histoname,"ptGenAllBin%i",binNum);
- cout << "Booking " << histoname << endl;
- me_binned_ptGenAll[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets", 80, 0, 8000 );
+ me_ptHatAll[binNum]=dbe_->book1D( histoname,  "p_{T}hat for process", 80, 0, 8000 );
 
+ sprintf (histoname,"ptHatLowBin%i",binNum);
+ me_ptHatLow[binNum]=dbe_->book1D( histoname,  "p_{T}hat for process (Lower p_{T}", 200, 0, 1000 );
+
+ sprintf (histoname,"ptGenAllBin%i",binNum);
+ me_ptGenAll[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets", 80, 0, 8000 );
  
+ sprintf (histoname,"ptGenLowBin%i",binNum);
+ me_ptGenLow[binNum] = dbe_->book1D( histoname,  "p_{T} for leading genjets (Lower p_{T})", 200, 0, 1000 );
+  
+ sprintf (histoname,"etaGen%i",binNum);
+ me_etaGen[binNum]=dbe_->book1D(histoname, "#eta of leading GenJets", 100, -5, 5 );
+ 
+ sprintf (histoname,"etaGenLowpt%i",binNum);
+ me_etaGenLowpt[binNum]=dbe_->book1D( histoname, "#eta of Low p_{T} leading GenJets", 100, -5, 5 );
+ 
+ sprintf (histoname,"phiGen%i",binNum);
+ me_phiGen[binNum]=dbe_->book1D( histoname, "#phi of leading GenJets", 60, -M_PI, M_PI );
+
+
+
+ //   me_ptGenAllEtaB=dbe_->book1D( "ptGenAllEtaB",  "p_{T} for leadkng genjets #eta<1", 80, 0, 8000 );
+ //   me_ptGenLowEtaB=dbe_->book1D( "ptGenLowEtaB",  "p_{T} for leading genjets #eta<1 (Lower p_{T})", 200, 0, 1000 );
+ //   me_ptGenAllEtaBE=dbe_->book1D( "ptGenAllEtaBE",  "p_{T} for leading genjets 1<#eta<1.5", 80, 0, 8000 );
+ //   me_ptGenLowEtaBE=dbe_->book1D( "ptGenLowEtaBE",  "p_{T} for leading genjets 1<#eta<1.5 (Lower p_{T})", 200, 0, 1000 );
+ //   me_ptGenAllEtaE=dbe_->book1D( "ptGenAllEtaE",  "p_{T} for leading genjets 1.5<#eta<2.5", 80, 0, 8000 );
+ //   me_ptGenLowEtaE=dbe_->book1D( "ptGenLowEtaE",  "p_{T} for leading genjets 1.5<#eta<2.5 (Lower p_{T})", 200, 0, 1000 );
+ //   me_ptGenAllEtaEF=dbe_->book1D( "ptGenAllEtaEF",  "p_{T} for leading genjets 2.5<#eta<3", 80, 0, 8000 );
+ //  me_ptGenLowEtaEF=dbe_->book1D( "ptGenLowEtaEF",  "p_{T} for leading genjets 2.5<#eta<3 (Lower p_{T})", 200, 0, 1000 );
+ //   me_ptGenAllEtaF=dbe_->book1D( "ptGenAllEtaF",  "p_{T} for leading genjets 3<#eta<5", 80, 0, 8000 );
+ //  me_ptGenLowEtaF=dbe_->book1D( "ptGenLowEtaF",  "p_{T} for leading genjets 3<#eta<5 (Lower p_{T})", 200, 0, 1000 );
+
 
 }
 
@@ -159,13 +162,8 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
     BinIsBooked[CurrPtBin]=true;
       }
 
-  if (me_binned_ptHatAll[CurrPtBin])me_binned_ptHatAll[CurrPtBin]->Fill(evtscale,BinWt);   
-
-
-  if (me_ptHatAll) me_ptHatAll->Fill(evtscale,BinWt);
-  if (me_ptHatLow) me_ptHatLow->Fill(evtscale,BinWt);
-
-
+  if (me_ptHatAll[CurrPtBin]) me_ptHatAll[CurrPtBin]->Fill(evtscale,BinWt);   
+  if (me_ptHatLow[CurrPtBin]) me_ptHatLow[CurrPtBin]->Fill(evtscale,BinWt);   
 
 
   //Get the CaloJet collection
@@ -188,8 +186,10 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
   //Loop over the two leading GenJets and fill some histograms
   jetInd = 0;
   for( GenJetCollection::const_iterator gen = genJets->begin(); gen != genJets->end() && jetInd<2; ++ gen ) {
-    if (me_ptGenAll) me_ptGenAll->Fill( gen->pt(),BinWt );  
-    if (me_ptGenLow) me_ptGenLow->Fill( gen->pt(),BinWt ); 
+    if (me_ptGenAll[CurrPtBin]) me_ptGenAll[CurrPtBin]->Fill( gen->pt(),BinWt );  
+    if (me_ptGenLow[CurrPtBin]) me_ptGenLow[CurrPtBin]->Fill( gen->pt(),BinWt ); 
+
+    /*
     if (abs(gen->eta())<1) {
            if (me_ptGenAllEtaB) me_ptGenAllEtaB->Fill( gen->pt(),BinWt );  
            if (me_ptGenLowEtaB) me_ptGenLowEtaB->Fill( gen->pt(),BinWt ); 
@@ -211,11 +211,13 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
            if (me_ptGenLowEtaF) me_ptGenLowEtaF->Fill( gen->pt(),BinWt ); 
     }
 
-    if (me_etaGen) me_etaGen->Fill( gen->eta(),BinWt );
+    */
+
+    if (me_etaGen[CurrPtBin]) me_etaGen[CurrPtBin]->Fill( gen->eta(),BinWt );
     if (gen->pt()<1000) {
-      if (me_etaGenLowpt) me_etaGenLowpt->Fill(gen->eta(),BinWt);
+      if (me_etaGenLowpt[CurrPtBin]) me_etaGenLowpt[CurrPtBin]->Fill(gen->eta(),BinWt);
     }
-    if (me_phiGen) me_phiGen->Fill( gen->phi(),BinWt );
+    if (me_phiGen[CurrPtBin]) me_phiGen[CurrPtBin]->Fill( gen->phi(),BinWt );
     jetInd++;
   }
 
