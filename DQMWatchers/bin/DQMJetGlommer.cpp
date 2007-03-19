@@ -47,6 +47,9 @@ public:
 			    reconnect_delay_secs);
     //  subscribe to all available monitorable
     mui->subscribe("Collector/*");
+
+    CollateMonitorElement* testsum=mui->collate1D("sum_C2","C2-summary","Summary");
+   mui->add(testsum, "*/*/ptHatLowBin*");
   }
 
   // ---------------------------------------------------------------------
@@ -83,11 +86,11 @@ public:
 	this->save(200);
       }
 
-    // subscribe to new monitorable
-    // mui->subscribeNew("*");
+     //subscribe to new monitorable
+     mui->subscribeNew("*");
 
-     bool useSubfolders = true;
-     mui->subscribeNew("Collector/", useSubfolders);
+     //bool useSubfolders = true;
+     //mui->subscribeNew("Collector/", useSubfolders);
 
     // # of full monitoring cycles processed
     updates = mui->getNumUpdates();
@@ -157,7 +160,7 @@ public:
 
         string collector,node,mename;
         extractpieces(fullpathname,collector,node,mename);
-//        meRegistry[mename.c_str]=meRegistry[mename.c_str]+1;
+        meRegistry[mename]++;
 
 	++it;
       }
@@ -211,7 +214,7 @@ private:
    // turn soft-reset flag on/off
    bool enable_softReset;
 
-  typedef std::map< char*, int > maptype;
+  typedef std::map< string, int > maptype;
   maptype meRegistry;
 
   };

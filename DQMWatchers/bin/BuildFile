@@ -4,3 +4,8 @@
 <use name=DQMServices/UI>
 </bin>
 
+<bin file=DQMJetGlommer.cpp>
+<use name=DQMServices/NodeROOT>
+<use name=DQMServices/UI>
+</bin>
+
