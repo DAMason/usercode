@@ -48,8 +48,8 @@ public:
     //  subscribe to all available monitorable
     mui->subscribe("Collector/*");
 
-    CollateMonitorElement* testsum=mui->collate1D("sum_C2","C2-summary","Summary");
-   mui->add(testsum, "*/*/ptHatLowBin*");
+    //    CollateMonitorElement* testsum=mui->collate1D("sum_C2","C2-summary","Summary");
+    //   mui->add(testsum, "*/*/ptHatLowBin*");
   }
 
   // ---------------------------------------------------------------------
@@ -87,7 +87,11 @@ public:
       }
 
      //subscribe to new monitorable
-     mui->subscribeNew("*");
+     mui->subscribeNew("Collector/*");
+
+
+     // register and book collateME's
+     registerAndCollate();
 
      //bool useSubfolders = true;
      //mui->subscribeNew("Collector/", useSubfolders);
@@ -158,9 +162,9 @@ public:
         cout << " Address of Monitoring Element " << *it 
 	     << " = " << fullpathname << endl;
 
-        string collector,node,mename;
-        extractpieces(fullpathname,collector,node,mename);
-        meRegistry[mename]++;
+	//        string collector,node,mename;
+	//      extractpieces(fullpathname,collector,node,mename);
+        //    meRegistry[mename]++;
 
 	++it;
       }
@@ -177,6 +181,52 @@ public:
       }
   }
 
+  void registerAndCollate(void)
+  {
+    char cename[37],cewildcard[37];
+    vector<string> subdirs = mui->getSubdirs();
+    vector<string> contents = mui->getMEs();
+    vector<string>::const_iterator it = contents.begin();
+    while(it != contents.end())
+      {
+      string fullpathname = mui->pwd() + "/" + (*it);
+      string collector,node,mename;
+      extractpieces(fullpathname,collector,node,mename);
+      if (matcher(mename,"\\S+")&&collector!="Summed"){
+        cout << fullpathname <<"  "<< collector << "   "<< node <<"   "<< mename << endl;
+        meRegistry[mename]++;
+        cout << "meRegistry: " << mename << "  " << meRegistry[mename] << endl;
+        if (meRegistry[mename]==1) {
+          cout << "New histo: " << mename << endl;
+          
+          sprintf(cename,"%s-sum",mename.c_str());
+          CollateMonitorElement* testsum=mui->collate1D(mename,cename,"Summed");
+          sprintf(cewildcard,"*/*/%s",mename.c_str());
+          mui->add(testsum, cewildcard);
+        }     
+      }
+      ++it;
+    }
+  
+
+    it = subdirs.begin();
+    while(it != subdirs.end())
+      {
+       mui->cd(*it);
+       registerAndCollate();
+       mui->goUp();
+       ++it;
+      }
+   }
+
+  bool matcher(const string& testthing, const string& theregex) {
+    boost::regex e(theregex);
+    boost::smatch what;
+    //    cout << testthing << "  "  << theregex << endl;
+    return boost::regex_match(testthing,what,e,boost::match_extra);
+  }
+
+
   void extractpieces(const string& fullpath, string& collector,string& node, string& mepath) {
 //    boost::regex e("^(\\w+)\\W\\d+\\W/(\\w+)\\W\\d+\\W/(.+)");
       boost::regex e("^(\\w+)\\d*/(\\w+)\\d*/(.+)");
@@ -185,7 +235,10 @@ public:
     if(boost::regex_match(fullpath, what, e, boost::match_extra))
        {
        if (what.size()>=3) {
-          cout << "Collector: " << what[1] << " Node: " << what[2] << " ME: " << what[3] << endl;
+	 //          cout << "Collector: " << what[1] << " Node: " << what[2] << " ME: " << what[3] << endl;
+	 collector=what[1];
+         node=what[2];
+         mepath=what[3];
           }
 //      unsigned i;
 //       std::cout << "** Match found **\n   Sub-Expressions:\n";
