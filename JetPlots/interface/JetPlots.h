@@ -23,7 +23,7 @@ protected:
 private:
   
   bool BinIsBooked[21];
-  std::string CaloJetAlgorithm, GenJetAlgorithm,label_;
+  std::string CaloJetAlgorithm, GenJetAlgorithm, CorJetAlgorithm, label_;
   DaqMonitorBEInterface* dbe_;
   //MonitorElement* me_ptHatAll;
   //MonitorElement* me_ptHatLow;
@@ -66,7 +66,29 @@ private:
   BinnedMEset me_etaGen;
   BinnedMEset me_etaGenLowpt;
   BinnedMEset me_phiGen;
-
-
+  BinnedMEset me_ptCalAll;
+  BinnedMEset me_ptCalLow;
+  BinnedMEset me_ptCalAllEtaB;
+  BinnedMEset me_ptCalLowEtaB;
+  BinnedMEset me_ptCalAllEtaBE;
+  BinnedMEset me_ptCalLowEtaBE;
+  BinnedMEset me_ptCalAllEtaE;
+  BinnedMEset me_ptCalLowEtaE;
+  BinnedMEset me_ptCalAllEtaEF;
+  BinnedMEset me_ptCalLowEtaEF;
+  BinnedMEset me_ptCalAllEtaF;
+  BinnedMEset me_ptCalLowEtaF;
+  BinnedMEset me_ptCorAll;
+  BinnedMEset me_ptCorLow;
+  BinnedMEset me_ptCorAllEtaB;
+  BinnedMEset me_ptCorLowEtaB;
+  BinnedMEset me_ptCorAllEtaBE;
+  BinnedMEset me_ptCorLowEtaBE;
+  BinnedMEset me_ptCorAllEtaE;
+  BinnedMEset me_ptCorLowEtaE;
+  BinnedMEset me_ptCorAllEtaEF;
+  BinnedMEset me_ptCorLowEtaEF;
+  BinnedMEset me_ptCorAllEtaF;
+  BinnedMEset me_ptCorLowEtaF;
 };
 #endif
