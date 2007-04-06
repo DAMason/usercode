@@ -63,6 +63,12 @@ private:
   BinnedMEset me_ptGenLowEtaEF;
   BinnedMEset me_ptGenAllEtaF;
   BinnedMEset me_ptGenLowEtaF;
+  BinnedMEset me_GenDjMEtaBB;
+  BinnedMEset me_GenDjM;
+  BinnedMEset me_GenEtaEtaBB;
+  BinnedMEset me_GenEtaEta;
+  BinnedMEset me_GenPtPt;
+  BinnedMEset me_GenPtPtBB;
   BinnedMEset me_etaGen;
   BinnedMEset me_etaGenLowpt;
   BinnedMEset me_phiGen;
@@ -78,6 +84,12 @@ private:
   BinnedMEset me_ptCalLowEtaEF;
   BinnedMEset me_ptCalAllEtaF;
   BinnedMEset me_ptCalLowEtaF;
+  BinnedMEset me_CalDjMEtaBB;
+  BinnedMEset me_CalDjM;
+  BinnedMEset me_CalEtaEtaBB;
+  BinnedMEset me_CalEtaEta;
+  BinnedMEset me_CalPtPt;
+  BinnedMEset me_CalPtPtBB;
   BinnedMEset me_ptCorAll;
   BinnedMEset me_ptCorLow;
   BinnedMEset me_ptCorAllEtaB;
@@ -90,5 +102,12 @@ private:
   BinnedMEset me_ptCorLowEtaEF;
   BinnedMEset me_ptCorAllEtaF;
   BinnedMEset me_ptCorLowEtaF;
+  BinnedMEset me_CorDjMEtaBB;
+  BinnedMEset me_CorDjM;
+  BinnedMEset me_CorEtaEtaBB;
+  BinnedMEset me_CorEtaEta;
+  BinnedMEset me_CorPtPt;
+  BinnedMEset me_CorPtPtBB;
+
 };
 #endif
