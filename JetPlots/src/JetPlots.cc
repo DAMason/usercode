@@ -91,57 +91,111 @@ void JetPlots::bookBinnedMEs(int binNum) {
  me_ptHatLow[binNum]=dbe_->book1D( histoname,  "p_{T}hat for process (Lower p_{T}", 200, 0, 1000 );
 
 
+ sprintf (histoname,"LptGenAllBin%i",binNum);
+ me_LptGenAll[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets", 100, 0, 5000 );
+
+
+ sprintf (histoname,"LptGenLowBin%i",binNum);
+ me_LptGenLow[binNum] = dbe_->book1D( histoname,  "p_{T} for leading genjets (Lower p_{T})", 200, 0, 1000 );
+
+
+ sprintf (histoname,"LetaGenBin%i",binNum);
+ me_LetaGen[binNum]=dbe_->book1D(histoname, "#eta of leading GenJets", 100, -5, 5 );
+ 
+ sprintf (histoname,"LetaGenLowptBin%i",binNum);
+ me_LetaGenLowpt[binNum]=dbe_->book1D( histoname, "#eta of Low p_{T} leading GenJets", 100, -5, 5 );
+
+ 
+ sprintf (histoname,"LphiGenBin%i",binNum);
+ me_LphiGen[binNum]=dbe_->book1D( histoname, "#phi of leading GenJets", 60, -M_PI, M_PI );
+
+
+ sprintf (histoname,"LptGenAllEtaBBin%i",binNum);
+ me_LptGenAllEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets #eta<1", 100, 0, 5000 );
+
+
+ sprintf (histoname,"LptGenLowEtaBBin%i",binNum);
+ me_LptGenLowEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets #eta<1 (Lower p_{T})", 200, 0, 1000 );
+ 
+
+ sprintf (histoname,"LptGenAllEtaBEBin%i",binNum);
+ me_LptGenAllEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 1<#eta<1.8", 100, 0, 5000 );
+
+
+ sprintf (histoname,"LptGenLowEtaBEBin%i",binNum);
+ me_LptGenLowEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 1<#eta<1.8 (Lower p_{T})", 200, 0, 1000 );
+
+ sprintf (histoname,"LptGenAllEtaEBin%i",binNum);
+ me_LptGenAllEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 1.8<#eta<2.2", 100, 0, 5000 );
+
+ sprintf (histoname,"LptGenLowEtaEBin%i",binNum);
+ me_LptGenLowEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 1.8<#eta<2.2 (Lower p_{T})", 200, 0, 1000 );
+
+ sprintf (histoname,"LptGenAllEtaEFBin%i",binNum);
+ me_LptGenAllEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 2.2<#eta<3.5", 100, 0, 5000 );
+
+ sprintf (histoname,"LptGenLowEtaEFBin%i",binNum);
+ me_LptGenLowEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 2.2<#eta<3.5 (Lower p_{T})", 200, 0, 1000 );
+
+ sprintf (histoname,"LptGenAllEtaFBin%i",binNum);
+ me_LptGenAllEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 3.5<#eta<5", 100, 0, 5000 );
+
+ sprintf (histoname,"LptGenLowEtaFBin%i",binNum);
+ me_LptGenLowEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 3.5<#eta<5 (Lower p_{T})", 200, 0, 1000 );
+
+
+
  sprintf (histoname,"ptGenAllBin%i",binNum);
- me_ptGenAll[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets", 100, 0, 5000 );
+ me_ptGenAll[binNum]=dbe_->book1D( histoname,  "p_{T} for all genjets", 100, 0, 5000 );
 
 
  sprintf (histoname,"ptGenLowBin%i",binNum);
- me_ptGenLow[binNum] = dbe_->book1D( histoname,  "p_{T} for leading genjets (Lower p_{T})", 200, 0, 1000 );
+ me_ptGenLow[binNum] = dbe_->book1D( histoname,  "p_{T} for all genjets (Lower p_{T})", 200, 0, 1000 );
 
 
  sprintf (histoname,"etaGenBin%i",binNum);
- me_etaGen[binNum]=dbe_->book1D(histoname, "#eta of leading GenJets", 100, -5, 5 );
+ me_etaGen[binNum]=dbe_->book1D(histoname, "#eta of all GenJets", 100, -5, 5 );
  
  sprintf (histoname,"etaGenLowptBin%i",binNum);
- me_etaGenLowpt[binNum]=dbe_->book1D( histoname, "#eta of Low p_{T} leading GenJets", 100, -5, 5 );
+ me_etaGenLowpt[binNum]=dbe_->book1D( histoname, "#eta of Low p_{T} all GenJets", 100, -5, 5 );
 
  
  sprintf (histoname,"phiGenBin%i",binNum);
- me_phiGen[binNum]=dbe_->book1D( histoname, "#phi of leading GenJets", 60, -M_PI, M_PI );
+ me_phiGen[binNum]=dbe_->book1D( histoname, "#phi of all GenJets", 60, -M_PI, M_PI );
 
 
  sprintf (histoname,"ptGenAllEtaBBin%i",binNum);
- me_ptGenAllEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets #eta<1", 100, 0, 5000 );
+ me_ptGenAllEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for all genjets #eta<1", 100, 0, 5000 );
 
 
  sprintf (histoname,"ptGenLowEtaBBin%i",binNum);
- me_ptGenLowEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets #eta<1 (Lower p_{T})", 200, 0, 1000 );
+ me_ptGenLowEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for all genjets #eta<1 (Lower p_{T})", 200, 0, 1000 );
  
 
  sprintf (histoname,"ptGenAllEtaBEBin%i",binNum);
- me_ptGenAllEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 1<#eta<1.5", 100, 0, 5000 );
+ me_ptGenAllEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for all genjets 1<#eta<1.8", 100, 0, 5000 );
 
 
  sprintf (histoname,"ptGenLowEtaBEBin%i",binNum);
- me_ptGenLowEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 1<#eta<1.5 (Lower p_{T})", 200, 0, 1000 );
+ me_ptGenLowEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for all genjets 1<#eta<1.8 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"ptGenAllEtaEBin%i",binNum);
- me_ptGenAllEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 1.5<#eta<2.5", 100, 0, 5000 );
+ me_ptGenAllEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for all genjets 1.8<#eta<2.2", 100, 0, 5000 );
 
  sprintf (histoname,"ptGenLowEtaEBin%i",binNum);
- me_ptGenLowEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 1.5<#eta<2.5 (Lower p_{T})", 200, 0, 1000 );
+ me_ptGenLowEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for all genjets 1.8<#eta<2.2 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"ptGenAllEtaEFBin%i",binNum);
- me_ptGenAllEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 2.5<#eta<3", 100, 0, 5000 );
+ me_ptGenAllEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for all genjets 2.2<#eta<3.5", 100, 0, 5000 );
 
  sprintf (histoname,"ptGenLowEtaEFBin%i",binNum);
- me_ptGenLowEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 2.5<#eta<3 (Lower p_{T})", 200, 0, 1000 );
+ me_ptGenLowEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for all genjets 2.2<#eta<3.5 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"ptGenAllEtaFBin%i",binNum);
- me_ptGenAllEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 3<#eta<5", 100, 0, 5000 );
+ me_ptGenAllEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for all genjets 3.5<#eta<5", 100, 0, 5000 );
 
  sprintf (histoname,"ptGenLowEtaFBin%i",binNum);
- me_ptGenLowEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading genjets 3<#eta<5 (Lower p_{T})", 200, 0, 1000 );
+ me_ptGenLowEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for all genjets 3.5<#eta<5 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"GenDjMBin%i",binNum);
  me_GenDjM[binNum]=dbe_->book1D( histoname,  "Dijet Mass for leading genjets", 160, 0, 8000 );
@@ -161,46 +215,88 @@ void JetPlots::bookBinnedMEs(int binNum) {
  sprintf (histoname,"2DGenPtPtBBBin%i",binNum);
  me_GenPtPtBB[binNum]=dbe_->book2D( histoname, "p_{T} vs p_{T} for leading barrel jets",100,0,5000,100,0,5000);
 
+ sprintf (histoname,"nGenJetsBin%i",binNum);
+ me_nGenJets[binNum]=dbe_->book1D( histoname,  "Number of genJets", 20, 0, 20 );
 
-// sprintf (histoname,"nGenJetsBin%i",binNum);
-// me_nGenJets[binNum]=dbe_->book1D( histoname,  "Number of genJets", 20, 0, 20 );
+
+
+
+
+ sprintf (histoname,"LptCalAllBin%i",binNum);
+ me_LptCalAll[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets", 100, 0, 5000 );
+
+ sprintf (histoname,"LptCalLowBin%i",binNum);
+ me_LptCalLow[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets", 200, 0, 1000 );
+
+
+ sprintf (histoname,"LptCalAllEtaBBin%i",binNum);
+ me_LptCalAllEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets #eta<1", 100, 0, 5000 );
+
+ sprintf (histoname,"LptCalLowEtaBBin%i",binNum);
+ me_LptCalLowEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets #eta<1 (Lower p_{T})", 200, 0, 1000 );
+
+ sprintf (histoname,"LptCalAllEtaBEBin%i",binNum);
+ me_LptCalAllEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 1<#eta<1.8", 100, 0, 5000 );
+
+ sprintf (histoname,"LptCalLowEtaBEBin%i",binNum);
+ me_LptCalLowEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 1<#eta<1.8 (Lower p_{T})", 200, 0, 1000 );
+
+ sprintf (histoname,"LptCalAllEtaEBin%i",binNum);
+ me_LptCalAllEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 1.8<#eta<2.2", 100, 0, 5000 );
+
+ sprintf (histoname,"LptCalLowEtaEBin%i",binNum);
+ me_LptCalLowEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 1.8<#eta<2.2 (Lower p_{T})", 200, 0, 1000 );
+
+ sprintf (histoname,"LptCalAllEtaEFBin%i",binNum);
+ me_LptCalAllEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 2.2<#eta<3.5", 100, 0, 5000 );
+
+ sprintf (histoname,"LptCalLowEtaEFBin%i",binNum);
+ me_LptCalLowEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 2.2<#eta<3.5 (Lower p_{T})", 200, 0, 1000 );
+
+ sprintf (histoname,"LptCalAllEtaFBin%i",binNum);
+ me_LptCalAllEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 3.5<#eta<5", 100, 0, 5000 );
+
+ sprintf (histoname,"LptCalLowEtaFBin%i",binNum);
+ me_LptCalLowEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 3.5<#eta<5 (Lower p_{T})", 200, 0, 1000 );
+
+
 
  sprintf (histoname,"ptCalAllBin%i",binNum);
- me_ptCalAll[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets", 100, 0, 5000 );
+ me_ptCalAll[binNum]=dbe_->book1D( histoname,  "p_{T} for all calojets", 100, 0, 5000 );
 
  sprintf (histoname,"ptCalLowBin%i",binNum);
- me_ptCalLow[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets", 200, 0, 1000 );
+ me_ptCalLow[binNum]=dbe_->book1D( histoname,  "p_{T} for all calojets", 200, 0, 1000 );
 
 
  sprintf (histoname,"ptCalAllEtaBBin%i",binNum);
- me_ptCalAllEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets #eta<1", 100, 0, 5000 );
+ me_ptCalAllEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for all calojets #eta<1", 100, 0, 5000 );
 
  sprintf (histoname,"ptCalLowEtaBBin%i",binNum);
- me_ptCalLowEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets #eta<1 (Lower p_{T})", 200, 0, 1000 );
+ me_ptCalLowEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for all calojets #eta<1 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"ptCalAllEtaBEBin%i",binNum);
- me_ptCalAllEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 1<#eta<1.5", 100, 0, 5000 );
+ me_ptCalAllEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for all calojets 1<#eta<1.8", 100, 0, 5000 );
 
  sprintf (histoname,"ptCalLowEtaBEBin%i",binNum);
- me_ptCalLowEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 1<#eta<1.5 (Lower p_{T})", 200, 0, 1000 );
+ me_ptCalLowEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for all calojets 1<#eta<1.8 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"ptCalAllEtaEBin%i",binNum);
- me_ptCalAllEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 1.5<#eta<2.5", 100, 0, 5000 );
+ me_ptCalAllEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for all calojets 1.8<#eta<2.2", 100, 0, 5000 );
 
  sprintf (histoname,"ptCalLowEtaEBin%i",binNum);
- me_ptCalLowEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 1.5<#eta<2.5 (Lower p_{T})", 200, 0, 1000 );
+ me_ptCalLowEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for all calojets 1.8<#eta<2.2 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"ptCalAllEtaEFBin%i",binNum);
- me_ptCalAllEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 2.5<#eta<3", 100, 0, 5000 );
+ me_ptCalAllEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for all calojets 2.2<#eta<3.5", 100, 0, 5000 );
 
  sprintf (histoname,"ptCalLowEtaEFBin%i",binNum);
- me_ptCalLowEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 2.5<#eta<3 (Lower p_{T})", 200, 0, 1000 );
+ me_ptCalLowEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for all calojets 2.2<#eta<3.5 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"ptCalAllEtaFBin%i",binNum);
- me_ptCalAllEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 3<#eta<5", 100, 0, 5000 );
+ me_ptCalAllEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for all calojets 3.5<#eta<5", 100, 0, 5000 );
 
  sprintf (histoname,"ptCalLowEtaFBin%i",binNum);
- me_ptCalLowEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for leading calojets 3<#eta<5 (Lower p_{T})", 200, 0, 1000 );
+ me_ptCalLowEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for all calojets 3.5<#eta<5 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"CalDjMBin%i",binNum);
  me_CalDjM[binNum]=dbe_->book1D( histoname,  "Dijet Mass for leading calojets", 160, 0, 8000 );
@@ -220,43 +316,88 @@ void JetPlots::bookBinnedMEs(int binNum) {
  sprintf (histoname,"2DCalPtPtBBBin%i",binNum);
  me_CalPtPtBB[binNum]=dbe_->book2D( histoname, "p_{T} vs p_{T} for leading barrel calojets",100,0,5000,100,0,5000);
 
+ sprintf (histoname,"nCalJetsBin%i",binNum);
+ me_nCalJets[binNum]=dbe_->book1D( histoname,  "Number of caloJets", 20, 0, 20 );
+
+
+
+
+
+ sprintf (histoname,"LptCorAllBin%i",binNum);
+ me_LptCorAll[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets", 100, 0, 5000 );
+
+ sprintf (histoname,"LptCorLowBin%i",binNum);
+ me_LptCorLow[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets", 200, 0, 1000 );
+
+
+ sprintf (histoname,"LptCorAllEtaBBin%i",binNum);
+ me_LptCorAllEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets #eta<1", 100, 0, 5000 );
+
+ sprintf (histoname,"LptCorLowEtaBBin%i",binNum);
+ me_LptCorLowEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets #eta<1 (Lower p_{T})", 200, 0, 1000 );
+
+ sprintf (histoname,"LptCorAllEtaBEBin%i",binNum);
+ me_LptCorAllEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 1<#eta<1.8", 100, 0, 5000 );
+
+ sprintf (histoname,"LptCorLowEtaBEBin%i",binNum);
+ me_LptCorLowEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 1<#eta<1.8 (Lower p_{T})", 200, 0, 1000 );
+
+ sprintf (histoname,"LptCorAllEtaEBin%i",binNum);
+ me_LptCorAllEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 1.8<#eta<2.2", 100, 0, 5000 );
+
+ sprintf (histoname,"LptCorLowEtaEBin%i",binNum);
+ me_LptCorLowEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 1.8<#eta<2.2 (Lower p_{T})", 200, 0, 1000 );
+
+ sprintf (histoname,"LptCorAllEtaEFBin%i",binNum);
+ me_LptCorAllEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 2.2<#eta<3.5", 100, 0, 5000 );
+
+ sprintf (histoname,"LptCorLowEtaEFBin%i",binNum);
+ me_LptCorLowEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 2.2<#eta<3.5 (Lower p_{T})", 200, 0, 1000 );
+
+ sprintf (histoname,"LptCorAllEtaFBin%i",binNum);
+ me_LptCorAllEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 3.5<#eta<5", 100, 0, 5000 );
+
+ sprintf (histoname,"LptCorLowEtaFBin%i",binNum);
+ me_LptCorLowEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 3.5<#eta<5 (Lower p_{T})", 200, 0, 1000 );
+
+
 
  sprintf (histoname,"ptCorAllBin%i",binNum);
- me_ptCorAll[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets", 100, 0, 5000 );
+ me_ptCorAll[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected all calojets", 100, 0, 5000 );
 
  sprintf (histoname,"ptCorLowBin%i",binNum);
- me_ptCorLow[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets", 200, 0, 1000 );
+ me_ptCorLow[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected all calojets", 200, 0, 1000 );
 
 
  sprintf (histoname,"ptCorAllEtaBBin%i",binNum);
- me_ptCorAllEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets #eta<1", 100, 0, 5000 );
+ me_ptCorAllEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected all calojets #eta<1", 100, 0, 5000 );
 
  sprintf (histoname,"ptCorLowEtaBBin%i",binNum);
- me_ptCorLowEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets #eta<1 (Lower p_{T})", 200, 0, 1000 );
+ me_ptCorLowEtaB[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected all calojets #eta<1 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"ptCorAllEtaBEBin%i",binNum);
- me_ptCorAllEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 1<#eta<1.5", 100, 0, 5000 );
+ me_ptCorAllEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected all calojets 1<#eta<1.8", 100, 0, 5000 );
 
  sprintf (histoname,"ptCorLowEtaBEBin%i",binNum);
- me_ptCorLowEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 1<#eta<1.5 (Lower p_{T})", 200, 0, 1000 );
+ me_ptCorLowEtaBE[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected all calojets 1<#eta<1.8 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"ptCorAllEtaEBin%i",binNum);
- me_ptCorAllEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 1.5<#eta<2.5", 100, 0, 5000 );
+ me_ptCorAllEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected all calojets 1.8<#eta<2.2", 100, 0, 5000 );
 
  sprintf (histoname,"ptCorLowEtaEBin%i",binNum);
- me_ptCorLowEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 1.5<#eta<2.5 (Lower p_{T})", 200, 0, 1000 );
+ me_ptCorLowEtaE[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected all calojets 1.8<#eta<2.2 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"ptCorAllEtaEFBin%i",binNum);
- me_ptCorAllEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 2.5<#eta<3", 100, 0, 5000 );
+ me_ptCorAllEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected all calojets 2.2<#eta<3.5", 100, 0, 5000 );
 
  sprintf (histoname,"ptCorLowEtaEFBin%i",binNum);
- me_ptCorLowEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 2.5<#eta<3 (Lower p_{T})", 200, 0, 1000 );
+ me_ptCorLowEtaEF[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected all calojets 2.2<#eta<3.5 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"ptCorAllEtaFBin%i",binNum);
- me_ptCorAllEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 3<#eta<5", 100, 0, 5000 );
+ me_ptCorAllEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected all calojets 3.5<#eta<5", 100, 0, 5000 );
 
  sprintf (histoname,"ptCorLowEtaFBin%i",binNum);
- me_ptCorLowEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected leading calojets 3<#eta<5 (Lower p_{T})", 200, 0, 1000 );
+ me_ptCorLowEtaF[binNum]=dbe_->book1D( histoname,  "p_{T} for corrected all calojets 3.5<#eta<5 (Lower p_{T})", 200, 0, 1000 );
 
  sprintf (histoname,"CorDjMBin%i",binNum);
  me_CorDjM[binNum]=dbe_->book1D( histoname,  "Dijet Mass for leading corrected calojets", 160, 0, 8000 );
@@ -277,8 +418,8 @@ void JetPlots::bookBinnedMEs(int binNum) {
  me_CorPtPtBB[binNum]=dbe_->book2D( histoname, "p_{T} vs p_{T} for leading corrected barrel calojets",100,0,5000,100,0,5000);
 
 
-// sprintf (histoname,"nCoroJetsBin%i",binNum);
-// me_nCoroJets[binNum]=dbe_->book1D( histoname,  "Number of caloJets", 20, 0, 20 );
+ sprintf (histoname,"nCorJetsBin%i",binNum);
+ me_nCorJets[binNum]=dbe_->book1D( histoname,  "Number of corrected caloJets", 20, 0, 20 );
 }
 
 
@@ -339,9 +480,10 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
   //Loop over the two leading GenJets and fill some histograms
   int jetInd = 0;
   math::XYZTLorentzVector p4gen[2];
-  for( GenJetCollection::const_iterator gen = genJets->begin(); gen != genJets->end() && jetInd<2; ++ gen ) {
+  for( GenJetCollection::const_iterator gen = genJets->begin(); gen != genJets->end(); ++ gen ) {
 
-    p4gen[jetInd]=gen->p4();
+
+
 
     if (me_ptGenAll[CurrPtBin]) me_ptGenAll[CurrPtBin]->Fill( gen->pt(),BinWt );  
     if (me_ptGenLow[CurrPtBin]) me_ptGenLow[CurrPtBin]->Fill( gen->pt(),BinWt ); 
@@ -351,19 +493,19 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
            if (me_ptGenAllEtaB[CurrPtBin]) me_ptGenAllEtaB[CurrPtBin]->Fill( gen->pt(),BinWt );  
            if (me_ptGenLowEtaB[CurrPtBin]) me_ptGenLowEtaB[CurrPtBin]->Fill( gen->pt(),BinWt ); 
     }
-    if (abs(gen->eta())>=1&&abs(gen->eta())<1.5) {
+    if (abs(gen->eta())>=1&&abs(gen->eta())<1.8) {
            if (me_ptGenAllEtaBE[CurrPtBin]) me_ptGenAllEtaBE[CurrPtBin]->Fill( gen->pt(),BinWt );  
            if (me_ptGenLowEtaBE[CurrPtBin]) me_ptGenLowEtaBE[CurrPtBin]->Fill( gen->pt(),BinWt ); 
     }
-    if (abs(gen->eta())>=1.5&&abs(gen->eta())<2.5) {
+    if (abs(gen->eta())>=1.8&&abs(gen->eta())<2.2) {
            if (me_ptGenAllEtaE[CurrPtBin]) me_ptGenAllEtaE[CurrPtBin]->Fill( gen->pt(),BinWt );  
            if (me_ptGenLowEtaE[CurrPtBin]) me_ptGenLowEtaE[CurrPtBin]->Fill( gen->pt(),BinWt ); 
     }
-    if (abs(gen->eta())>=2.5&&abs(gen->eta())<3) {
+    if (abs(gen->eta())>=2.2&&abs(gen->eta())<3.5) {
            if (me_ptGenAllEtaEF[CurrPtBin]) me_ptGenAllEtaEF[CurrPtBin]->Fill( gen->pt(),BinWt );  
            if (me_ptGenAllEtaEF[CurrPtBin]) me_ptGenLowEtaEF[CurrPtBin]->Fill( gen->pt(),BinWt ); 
     }
-    if (abs(gen->eta())>=3&&abs(gen->eta())<5) {
+    if (abs(gen->eta())>=3.5&&abs(gen->eta())<5) {
            if (me_ptGenAllEtaF[CurrPtBin]) me_ptGenAllEtaF[CurrPtBin]->Fill( gen->pt(),BinWt );  
            if (me_ptGenLowEtaF[CurrPtBin]) me_ptGenLowEtaF[CurrPtBin]->Fill( gen->pt(),BinWt ); 
     }
@@ -375,24 +517,74 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
       if (me_etaGenLowpt[CurrPtBin]) me_etaGenLowpt[CurrPtBin]->Fill(gen->eta(),BinWt);
     }
     if (me_phiGen[CurrPtBin]) me_phiGen[CurrPtBin]->Fill( gen->phi(),BinWt );
+
+
+    
+
+    if (jetInd<2) {
+
+      p4gen[jetInd]=gen->p4();
+
+      if (me_LptGenAll[CurrPtBin]) me_LptGenAll[CurrPtBin]->Fill( gen->pt(),BinWt );  
+      if (me_LptGenLow[CurrPtBin]) me_LptGenLow[CurrPtBin]->Fill( gen->pt(),BinWt ); 
+
+    
+      if (abs(gen->eta())<1) {
+           if (me_LptGenAllEtaB[CurrPtBin]) me_LptGenAllEtaB[CurrPtBin]->Fill( gen->pt(),BinWt );  
+           if (me_LptGenLowEtaB[CurrPtBin]) me_LptGenLowEtaB[CurrPtBin]->Fill( gen->pt(),BinWt ); 
+      }
+      if (abs(gen->eta())>=1&&abs(gen->eta())<1.8) {
+           if (me_LptGenAllEtaBE[CurrPtBin]) me_LptGenAllEtaBE[CurrPtBin]->Fill( gen->pt(),BinWt );  
+           if (me_LptGenLowEtaBE[CurrPtBin]) me_LptGenLowEtaBE[CurrPtBin]->Fill( gen->pt(),BinWt ); 
+      }
+      if (abs(gen->eta())>=1.8&&abs(gen->eta())<2.2) {
+           if (me_LptGenAllEtaE[CurrPtBin]) me_LptGenAllEtaE[CurrPtBin]->Fill( gen->pt(),BinWt );  
+           if (me_LptGenLowEtaE[CurrPtBin]) me_LptGenLowEtaE[CurrPtBin]->Fill( gen->pt(),BinWt ); 
+      }
+      if (abs(gen->eta())>=2.2&&abs(gen->eta())<3.5) {
+           if (me_LptGenAllEtaEF[CurrPtBin]) me_LptGenAllEtaEF[CurrPtBin]->Fill( gen->pt(),BinWt );  
+           if (me_LptGenAllEtaEF[CurrPtBin]) me_LptGenLowEtaEF[CurrPtBin]->Fill( gen->pt(),BinWt ); 
+      }
+      if (abs(gen->eta())>=3.5&&abs(gen->eta())<5) {
+           if (me_LptGenAllEtaF[CurrPtBin]) me_LptGenAllEtaF[CurrPtBin]->Fill( gen->pt(),BinWt );  
+           if (me_LptGenLowEtaF[CurrPtBin]) me_LptGenLowEtaF[CurrPtBin]->Fill( gen->pt(),BinWt ); 
+      }
+
+
+      if (me_LetaGen[CurrPtBin]) me_LetaGen[CurrPtBin]->Fill( gen->eta(),BinWt );
+      if (gen->pt()<1000) {
+        if (me_LetaGenLowpt[CurrPtBin]) me_LetaGenLowpt[CurrPtBin]->Fill(gen->eta(),BinWt);
+      }
+      if (me_LphiGen[CurrPtBin]) me_LphiGen[CurrPtBin]->Fill( gen->phi(),BinWt );
+
+    }
+  
     jetInd++;
+
   }
 
-  if (me_GenDjM[CurrPtBin]) me_GenDjM[CurrPtBin]->Fill((p4gen[0]+p4gen[1]).mass(),BinWt);
+  if (me_nGenJets[CurrPtBin]) me_nGenJets[CurrPtBin]->Fill(float(jetInd));
 
-  if (me_GenEtaEta[CurrPtBin]) me_GenEtaEta[CurrPtBin]->Fill(p4gen[0].eta(),p4gen[1].eta());
 
-  if (me_GenPtPt[CurrPtBin]) me_GenPtPt[CurrPtBin]->Fill(p4gen[0].pt(),p4gen[1].pt());
+    if (me_GenDjM[CurrPtBin]) me_GenDjM[CurrPtBin]->Fill((p4gen[0]+p4gen[1]).mass(),BinWt);
 
-  if (abs(p4gen[1].eta())<=1.0 && abs(p4gen[2].eta())<1.0) {
+    if (me_GenEtaEta[CurrPtBin]) me_GenEtaEta[CurrPtBin]->Fill(p4gen[0].eta(),p4gen[1].eta());
+
+    if (me_GenPtPt[CurrPtBin]) me_GenPtPt[CurrPtBin]->Fill(p4gen[0].pt(),p4gen[1].pt());
+
+    if (abs(p4gen[1].eta())<=1.0 && abs(p4gen[2].eta())<1.0) {
 
     if (me_GenDjMEtaBB[CurrPtBin]) me_GenDjMEtaBB[CurrPtBin]->Fill((p4gen[0]+p4gen[1]).mass(),BinWt);
 
     if (me_GenEtaEtaBB[CurrPtBin]) me_GenEtaEtaBB[CurrPtBin]->Fill(p4gen[0].eta(),p4gen[1].eta());
 
-    if (me_GenPtPtBB[CurrPtBin]) me_GenPtPtBB[CurrPtBin]->Fill(p4gen[0].pt(),p4gen[1].pt());
+    if (me_GenPtPtBB[CurrPtBin]) me_GenPtPtBB[CurrPtBin]->Fill(p4gen[0].pt(),p4gen[1].pt());    
 
-   }
+    }
+ 
+  
+
+
 
   //Get the CaloJet collection
   Handle<CaloJetCollection> caloJets;
@@ -401,9 +593,37 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
 
   //Loop over the two leading CaloJets and fill some histograms
   jetInd = 0;
-  for( CaloJetCollection::const_iterator cal = caloJets->begin(); cal != caloJets->end() && jetInd<2; ++ cal ) {
+  for( CaloJetCollection::const_iterator cal = caloJets->begin(); cal != caloJets->end(); ++ cal ) {
 
-    p4cal[jetInd]=cal->p4();
+    if (jetInd < 2) {
+
+      p4cal[jetInd]=cal->p4();
+
+      if (me_LptCalAll[CurrPtBin]) me_LptCalAll[CurrPtBin]->Fill( cal->pt(),BinWt );   
+      if (me_LptCalLow[CurrPtBin]) me_LptCalLow[CurrPtBin]->Fill( cal->pt(),BinWt );
+
+      if (abs(cal->eta())<1) {
+           if (me_LptCalAllEtaB[CurrPtBin]) me_LptCalAllEtaB[CurrPtBin]->Fill( cal->pt(),BinWt );  
+           if (me_LptCalLowEtaB[CurrPtBin]) me_LptCalLowEtaB[CurrPtBin]->Fill( cal->pt(),BinWt ); 
+      }
+      if (abs(cal->eta())>=1&&abs(cal->eta())<1.8) {
+           if (me_LptCalAllEtaBE[CurrPtBin]) me_LptCalAllEtaBE[CurrPtBin]->Fill( cal->pt(),BinWt );  
+           if (me_LptCalLowEtaBE[CurrPtBin]) me_LptCalLowEtaBE[CurrPtBin]->Fill( cal->pt(),BinWt ); 
+      }
+      if (abs(cal->eta())>=1.8&&abs(cal->eta())<2.2) {
+           if (me_LptCalAllEtaE[CurrPtBin]) me_LptCalAllEtaE[CurrPtBin]->Fill( cal->pt(),BinWt );  
+           if (me_LptCalLowEtaE[CurrPtBin]) me_LptCalLowEtaE[CurrPtBin]->Fill( cal->pt(),BinWt ); 
+      }
+      if (abs(cal->eta())>=2.2&&abs(cal->eta())<3.5) {
+           if (me_LptCalAllEtaEF[CurrPtBin]) me_LptCalAllEtaEF[CurrPtBin]->Fill( cal->pt(),BinWt );  
+           if (me_LptCalAllEtaEF[CurrPtBin]) me_LptCalLowEtaEF[CurrPtBin]->Fill( cal->pt(),BinWt ); 
+      }
+      if (abs(cal->eta())>=3.5&&abs(cal->eta())<5) {
+           if (me_LptCalAllEtaF[CurrPtBin]) me_LptCalAllEtaF[CurrPtBin]->Fill( cal->pt(),BinWt );  
+           if (me_LptCalLowEtaF[CurrPtBin]) me_LptCalLowEtaF[CurrPtBin]->Fill( cal->pt(),BinWt ); 
+      }
+
+    }
 
     if (me_ptCalAll[CurrPtBin]) me_ptCalAll[CurrPtBin]->Fill( cal->pt(),BinWt );   
     if (me_ptCalLow[CurrPtBin]) me_ptCalLow[CurrPtBin]->Fill( cal->pt(),BinWt );
@@ -412,25 +632,26 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
            if (me_ptCalAllEtaB[CurrPtBin]) me_ptCalAllEtaB[CurrPtBin]->Fill( cal->pt(),BinWt );  
            if (me_ptCalLowEtaB[CurrPtBin]) me_ptCalLowEtaB[CurrPtBin]->Fill( cal->pt(),BinWt ); 
     }
-    if (abs(cal->eta())>=1&&abs(cal->eta())<1.5) {
+    if (abs(cal->eta())>=1&&abs(cal->eta())<1.8) {
            if (me_ptCalAllEtaBE[CurrPtBin]) me_ptCalAllEtaBE[CurrPtBin]->Fill( cal->pt(),BinWt );  
            if (me_ptCalLowEtaBE[CurrPtBin]) me_ptCalLowEtaBE[CurrPtBin]->Fill( cal->pt(),BinWt ); 
     }
-    if (abs(cal->eta())>=1.5&&abs(cal->eta())<2.5) {
+    if (abs(cal->eta())>=1.8&&abs(cal->eta())<2.2) {
            if (me_ptCalAllEtaE[CurrPtBin]) me_ptCalAllEtaE[CurrPtBin]->Fill( cal->pt(),BinWt );  
            if (me_ptCalLowEtaE[CurrPtBin]) me_ptCalLowEtaE[CurrPtBin]->Fill( cal->pt(),BinWt ); 
     }
-    if (abs(cal->eta())>=2.5&&abs(cal->eta())<3) {
+    if (abs(cal->eta())>=2.2&&abs(cal->eta())<3.5) {
            if (me_ptCalAllEtaEF[CurrPtBin]) me_ptCalAllEtaEF[CurrPtBin]->Fill( cal->pt(),BinWt );  
            if (me_ptCalAllEtaEF[CurrPtBin]) me_ptCalLowEtaEF[CurrPtBin]->Fill( cal->pt(),BinWt ); 
     }
-    if (abs(cal->eta())>=3&&abs(cal->eta())<5) {
+    if (abs(cal->eta())>=3.5&&abs(cal->eta())<5) {
            if (me_ptCalAllEtaF[CurrPtBin]) me_ptCalAllEtaF[CurrPtBin]->Fill( cal->pt(),BinWt );  
            if (me_ptCalLowEtaF[CurrPtBin]) me_ptCalLowEtaF[CurrPtBin]->Fill( cal->pt(),BinWt ); 
     }
 
     jetInd++;
   }
+  if (me_nCalJets[CurrPtBin]) me_nCalJets[CurrPtBin]->Fill(float(jetInd));
 
 
   if (me_CalDjM[CurrPtBin]) me_CalDjM[CurrPtBin]->Fill((p4cal[0]+p4cal[1]).mass(),BinWt);
@@ -451,7 +672,7 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
 
 
 
-  //Get the CaloJet collection
+  //Get the Corrected CaloJet collection
   Handle<CaloJetCollection> corJets;
   math::XYZTLorentzVector p4cor[2];
   evt.getByLabel( CorJetAlgorithm, corJets );
@@ -459,9 +680,37 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
 
   //Loop over the two leading CorJets and fill a histogram
   jetInd = 0;
-  for( CaloJetCollection::const_iterator cor = corJets->begin(); cor != corJets->end() && jetInd<2; ++ cor ) {
+  for( CaloJetCollection::const_iterator cor = corJets->begin(); cor != corJets->end(); ++ cor ) {
     
+
+    if (jetInd<2) {
     p4cor[jetInd]=cor->p4();
+      if (me_LptCorAll[CurrPtBin]) me_LptCorAll[CurrPtBin]->Fill( cor->pt(),BinWt );   
+      if (me_LptCorLow[CurrPtBin]) me_LptCorLow[CurrPtBin]->Fill( cor->pt(),BinWt );
+
+      if (abs(cor->eta())<1) {
+           if (me_LptCorAllEtaB[CurrPtBin]) me_LptCorAllEtaB[CurrPtBin]->Fill( cor->pt(),BinWt );  
+           if (me_LptCorLowEtaB[CurrPtBin]) me_LptCorLowEtaB[CurrPtBin]->Fill( cor->pt(),BinWt ); 
+      }
+      if (abs(cor->eta())>=1&&abs(cor->eta())<1.8) {
+           if (me_LptCorAllEtaBE[CurrPtBin]) me_LptCorAllEtaBE[CurrPtBin]->Fill( cor->pt(),BinWt );  
+           if (me_LptCorLowEtaBE[CurrPtBin]) me_LptCorLowEtaBE[CurrPtBin]->Fill( cor->pt(),BinWt ); 
+      }
+      if (abs(cor->eta())>=1.8&&abs(cor->eta())<2.2) {
+           if (me_LptCorAllEtaE[CurrPtBin]) me_LptCorAllEtaE[CurrPtBin]->Fill( cor->pt(),BinWt );  
+           if (me_LptCorLowEtaE[CurrPtBin]) me_LptCorLowEtaE[CurrPtBin]->Fill( cor->pt(),BinWt ); 
+      }
+      if (abs(cor->eta())>=2.2&&abs(cor->eta())<3.5) {
+           if (me_LptCorAllEtaEF[CurrPtBin]) me_LptCorAllEtaEF[CurrPtBin]->Fill( cor->pt(),BinWt );  
+           if (me_LptCorAllEtaEF[CurrPtBin]) me_LptCorLowEtaEF[CurrPtBin]->Fill( cor->pt(),BinWt ); 
+      }
+      if (abs(cor->eta())>=3.5&&abs(cor->eta())<5) {
+           if (me_LptCorAllEtaF[CurrPtBin]) me_LptCorAllEtaF[CurrPtBin]->Fill( cor->pt(),BinWt );  
+           if (me_LptCorLowEtaF[CurrPtBin]) me_LptCorLowEtaF[CurrPtBin]->Fill( cor->pt(),BinWt ); 
+      }
+    }
+
+
     if (me_ptCorAll[CurrPtBin]) me_ptCorAll[CurrPtBin]->Fill( cor->pt(),BinWt );   
     if (me_ptCorLow[CurrPtBin]) me_ptCorLow[CurrPtBin]->Fill( cor->pt(),BinWt );
 
@@ -469,19 +718,19 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
            if (me_ptCorAllEtaB[CurrPtBin]) me_ptCorAllEtaB[CurrPtBin]->Fill( cor->pt(),BinWt );  
            if (me_ptCorLowEtaB[CurrPtBin]) me_ptCorLowEtaB[CurrPtBin]->Fill( cor->pt(),BinWt ); 
     }
-    if (abs(cor->eta())>=1&&abs(cor->eta())<1.5) {
+    if (abs(cor->eta())>=1&&abs(cor->eta())<1.8) {
            if (me_ptCorAllEtaBE[CurrPtBin]) me_ptCorAllEtaBE[CurrPtBin]->Fill( cor->pt(),BinWt );  
            if (me_ptCorLowEtaBE[CurrPtBin]) me_ptCorLowEtaBE[CurrPtBin]->Fill( cor->pt(),BinWt ); 
     }
-    if (abs(cor->eta())>=1.5&&abs(cor->eta())<2.5) {
+    if (abs(cor->eta())>=1.8&&abs(cor->eta())<2.2) {
            if (me_ptCorAllEtaE[CurrPtBin]) me_ptCorAllEtaE[CurrPtBin]->Fill( cor->pt(),BinWt );  
            if (me_ptCorLowEtaE[CurrPtBin]) me_ptCorLowEtaE[CurrPtBin]->Fill( cor->pt(),BinWt ); 
     }
-    if (abs(cor->eta())>=2.5&&abs(cor->eta())<3) {
+    if (abs(cor->eta())>=2.2&&abs(cor->eta())<3.5) {
            if (me_ptCorAllEtaEF[CurrPtBin]) me_ptCorAllEtaEF[CurrPtBin]->Fill( cor->pt(),BinWt );  
            if (me_ptCorAllEtaEF[CurrPtBin]) me_ptCorLowEtaEF[CurrPtBin]->Fill( cor->pt(),BinWt ); 
     }
-    if (abs(cor->eta())>=3&&abs(cor->eta())<5) {
+    if (abs(cor->eta())>=3.5&&abs(cor->eta())<5) {
            if (me_ptCorAllEtaF[CurrPtBin]) me_ptCorAllEtaF[CurrPtBin]->Fill( cor->pt(),BinWt );  
            if (me_ptCorLowEtaF[CurrPtBin]) me_ptCorLowEtaF[CurrPtBin]->Fill( cor->pt(),BinWt ); 
     }
@@ -489,6 +738,7 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
     jetInd++;
   }
 
+  if (me_nCorJets[CurrPtBin]) me_nCorJets[CurrPtBin]->Fill(float(jetInd));
 
 
 if (me_CorDjM[CurrPtBin]) me_CorDjM[CurrPtBin]->Fill((p4cor[0]+p4cor[1]).mass(),BinWt);

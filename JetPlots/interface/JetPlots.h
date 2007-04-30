@@ -49,6 +49,24 @@ private:
 
   typedef std::map< int, MonitorElement* > BinnedMEset;
 
+  BinnedMEset me_LptHatAll;
+  BinnedMEset me_LptHatLow;
+  BinnedMEset me_LptGenAll;
+  BinnedMEset me_LptGenLow;
+  BinnedMEset me_LptGenAllEtaB;
+  BinnedMEset me_LptGenLowEtaB;
+  BinnedMEset me_LptGenAllEtaBE;
+  BinnedMEset me_LptGenLowEtaBE;
+  BinnedMEset me_LptGenAllEtaE;
+  BinnedMEset me_LptGenLowEtaE;
+  BinnedMEset me_LptGenAllEtaEF;
+  BinnedMEset me_LptGenLowEtaEF;
+  BinnedMEset me_LptGenAllEtaF;
+  BinnedMEset me_LptGenLowEtaF;
+  BinnedMEset me_LetaGen;
+  BinnedMEset me_LetaGenLowpt;
+  BinnedMEset me_LphiGen;
+
   BinnedMEset me_ptHatAll;
   BinnedMEset me_ptHatLow;
   BinnedMEset me_ptGenAll;
@@ -72,6 +90,21 @@ private:
   BinnedMEset me_etaGen;
   BinnedMEset me_etaGenLowpt;
   BinnedMEset me_phiGen;
+  BinnedMEset me_nGenJets;
+
+  BinnedMEset me_LptCalAll;
+  BinnedMEset me_LptCalLow;
+  BinnedMEset me_LptCalAllEtaB;
+  BinnedMEset me_LptCalLowEtaB;
+  BinnedMEset me_LptCalAllEtaBE;
+  BinnedMEset me_LptCalLowEtaBE;
+  BinnedMEset me_LptCalAllEtaE;
+  BinnedMEset me_LptCalLowEtaE;
+  BinnedMEset me_LptCalAllEtaEF;
+  BinnedMEset me_LptCalLowEtaEF;
+  BinnedMEset me_LptCalAllEtaF;
+  BinnedMEset me_LptCalLowEtaF;
+
   BinnedMEset me_ptCalAll;
   BinnedMEset me_ptCalLow;
   BinnedMEset me_ptCalAllEtaB;
@@ -90,6 +123,22 @@ private:
   BinnedMEset me_CalEtaEta;
   BinnedMEset me_CalPtPt;
   BinnedMEset me_CalPtPtBB;
+  BinnedMEset me_nCalJets;
+
+
+  BinnedMEset me_LptCorAll;
+  BinnedMEset me_LptCorLow;
+  BinnedMEset me_LptCorAllEtaB;
+  BinnedMEset me_LptCorLowEtaB;
+  BinnedMEset me_LptCorAllEtaBE;
+  BinnedMEset me_LptCorLowEtaBE;
+  BinnedMEset me_LptCorAllEtaE;
+  BinnedMEset me_LptCorLowEtaE;
+  BinnedMEset me_LptCorAllEtaEF;
+  BinnedMEset me_LptCorLowEtaEF;
+  BinnedMEset me_LptCorAllEtaF;
+  BinnedMEset me_LptCorLowEtaF;
+
   BinnedMEset me_ptCorAll;
   BinnedMEset me_ptCorLow;
   BinnedMEset me_ptCorAllEtaB;
@@ -108,6 +157,7 @@ private:
   BinnedMEset me_CorEtaEta;
   BinnedMEset me_CorPtPt;
   BinnedMEset me_CorPtPtBB;
+  BinnedMEset me_nCorJets;
 
 };
 #endif
