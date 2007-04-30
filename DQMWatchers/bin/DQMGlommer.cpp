@@ -200,12 +200,12 @@ public:
       //  guys_done++;
       string collector,node,mename,truncmename;
       extractpieces(fullpathname,collector,node,mename);
-      if (matcher(mename,"\\S+")&&collector!="Summed"){
-//        cout << fullpathname <<"  "<< collector << "   "<< node <<"   "<< mename << endl;
+      if (matcher(mename,"[\\S\\s]+")&&collector!="Summed"){
+        //cout << fullpathname <<"  "<< collector << "   "<< node <<"   "<< mename << endl;
 
         meRegistry[mename]++;
         truncmename=(*it);
-//        cout << "meRegistry: " << mename << "  " << meRegistry[mename] << endl;
+        //cout << "meRegistry: " << mename << "  " << meRegistry[mename] << endl;
         if (meRegistry[mename]==1) {
           cout << "New histo set: " << truncmename << endl;
           sprintf(cename,"%s-sum",truncmename.c_str());
@@ -278,13 +278,13 @@ public:
 
   void extractpieces(const string& fullpath, string& collector,string& node, string& mepath) {
 //    boost::regex e("^(\\w+)\\W\\d+\\W/(\\w+)\\W\\d+\\W/(.+)");
-      boost::regex e("^(\\w+)\\d*/(\\w+-*\\w+)\\d*/(.+)");
+      boost::regex e("^(\\w+)\\d*/(\\w+-*\\w+)\\d*/([\\s\\S]+)");
 //    boost::regex e("^.(\\w+)(.+)");
     boost::smatch what; 
     if(boost::regex_match(fullpath, what, e, boost::match_extra))
        {
        if (what.size()>=3) {
-	 //          cout << "Collector: " << what[1] << " Node: " << what[2] << " ME: " << what[3] << endl;
+//	          cout << "Collector: " << what[1] << " Node: " << what[2] << " ME: " << what[3] << endl;
 	 collector=what[1];
          node=what[2];
          mepath=what[3];
