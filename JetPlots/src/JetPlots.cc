@@ -24,6 +24,7 @@
 #include "DataFormats/JetReco/interface/CaloJetCollection.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"
 #include "DataFormats/JetReco/interface/GenJet.h"
+#include "DataFormats/METReco/interface/CaloMET.h"
 #include <cmath>
 #include <iostream>
 #include <stdio.h>
@@ -35,7 +36,8 @@ using namespace std;
 
 // Get the algorithm of the jet collections we will read from the .cfg file 
 // which defines the value of the strings CaloJetAlgorithm and GenJetAlgorithm.
-JetPlots::JetPlots( const ParameterSet & cfg ) :
+
+  JetPlots::JetPlots( const ParameterSet & cfg ) :
   CaloJetAlgorithm( cfg.getParameter<string>( "CaloJetAlgorithm" ) ), 
   GenJetAlgorithm( cfg.getParameter<string>( "GenJetAlgorithm" ) ),
   CorJetAlgorithm( cfg.getParameter<string>( "CorJetAlgorithm") )
@@ -216,9 +218,11 @@ void JetPlots::bookBinnedMEs(int binNum) {
  me_GenPtPtBB[binNum]=dbe_->book2D( histoname, "p_{T} vs p_{T} for leading barrel jets",100,0,5000,100,0,5000);
 
  sprintf (histoname,"nGenJetsBin%i",binNum);
- me_nGenJets[binNum]=dbe_->book1D( histoname,  "Number of genJets", 20, 0, 20 );
+ me_nGenJets[binNum]=dbe_->book1D( histoname,  "Number of genJets", 50, 0, 50 );
 
 
+ sprintf (histoname,"GenJetMetRatio%i",binNum);
+ me_GenJetMETRat[binNum]=dbe_->book1D( histoname, "GenJet vector sum pt/SumET",200,0.0,1.0);
 
 
 
@@ -317,8 +321,10 @@ void JetPlots::bookBinnedMEs(int binNum) {
  me_CalPtPtBB[binNum]=dbe_->book2D( histoname, "p_{T} vs p_{T} for leading barrel calojets",100,0,5000,100,0,5000);
 
  sprintf (histoname,"nCalJetsBin%i",binNum);
- me_nCalJets[binNum]=dbe_->book1D( histoname,  "Number of caloJets", 20, 0, 20 );
+ me_nCalJets[binNum]=dbe_->book1D( histoname,  "Number of caloJets", 50, 0, 50 );
 
+ sprintf (histoname,"CalJetMetRatio%i",binNum);
+ me_CalJetMETRat[binNum]=dbe_->book1D( histoname, "CaloJet vector sum pt/SumET",200,0.0,1.0);
 
 
 
@@ -419,7 +425,14 @@ void JetPlots::bookBinnedMEs(int binNum) {
 
 
  sprintf (histoname,"nCorJetsBin%i",binNum);
- me_nCorJets[binNum]=dbe_->book1D( histoname,  "Number of corrected caloJets", 20, 0, 20 );
+ me_nCorJets[binNum]=dbe_->book1D( histoname,  "Number of corrected caloJets", 50, 0, 50 );
+
+ sprintf (histoname,"CorJetMetRatio%i",binNum);
+ me_CorJetMETRat[binNum]=dbe_->book1D( histoname, "Corrected CaloJet vector sum pt/SumET",200,0.0,1.0);
+
+ sprintf (histoname,"MetRatio%i",binNum);
+ me_CaloMETRat[binNum]=dbe_->book1D( histoname, "CaloMET/SumET",200,0.0,1.0);
+
 }
 
 
@@ -480,6 +493,8 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
   //Loop over the two leading GenJets and fill some histograms
   int jetInd = 0;
   math::XYZTLorentzVector p4gen[2];
+  math::XYZTLorentzVector p4gensump;
+  Double_t genSumEt = 0;
   for( GenJetCollection::const_iterator gen = genJets->begin(); gen != genJets->end(); ++ gen ) {
 
 
@@ -520,10 +535,16 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
 
 
     
+     p4gensump+=gen->p4();
+     genSumEt+=gen->pt();
 
     if (jetInd<2) {
 
       p4gen[jetInd]=gen->p4();
+
+    }
+
+    if (jetInd<1) {
 
       if (me_LptGenAll[CurrPtBin]) me_LptGenAll[CurrPtBin]->Fill( gen->pt(),BinWt );  
       if (me_LptGenLow[CurrPtBin]) me_LptGenLow[CurrPtBin]->Fill( gen->pt(),BinWt ); 
@@ -563,6 +584,13 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
 
   }
 
+
+  cout <<  " GenJetsumEt: " << genSumEt << " Et: " << p4gensump.pt(); 
+  if (genSumEt > 0) cout << " Ratio: " << p4gensump.pt()/genSumEt;
+  cout << endl;
+
+  if (me_GenJetMETRat[CurrPtBin]&&genSumEt > 0) me_GenJetMETRat[CurrPtBin]->Fill(p4gensump.pt()/genSumEt,BinWt);
+
   if (me_nGenJets[CurrPtBin]) me_nGenJets[CurrPtBin]->Fill(float(jetInd));
 
 
@@ -589,15 +617,25 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
   //Get the CaloJet collection
   Handle<CaloJetCollection> caloJets;
   math::XYZTLorentzVector p4cal[2];
+  math::XYZTLorentzVector p4calsump;
+  Double_t calSumEt;
   evt.getByLabel( CaloJetAlgorithm, caloJets );
 
   //Loop over the two leading CaloJets and fill some histograms
   jetInd = 0;
+  calSumEt = 0;
   for( CaloJetCollection::const_iterator cal = caloJets->begin(); cal != caloJets->end(); ++ cal ) {
+
+     p4calsump+=cal->p4();
+     calSumEt+=cal->pt();
 
     if (jetInd < 2) {
 
       p4cal[jetInd]=cal->p4();
+
+    }
+
+    if (jetInd < 1) {
 
       if (me_LptCalAll[CurrPtBin]) me_LptCalAll[CurrPtBin]->Fill( cal->pt(),BinWt );   
       if (me_LptCalLow[CurrPtBin]) me_LptCalLow[CurrPtBin]->Fill( cal->pt(),BinWt );
@@ -651,6 +689,14 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
 
     jetInd++;
   }
+
+
+  cout <<  " CalJetsumEt: " << calSumEt << " Et: " << p4calsump.pt(); 
+  if (calSumEt > 0) cout << " Ratio: " << p4calsump.pt()/calSumEt;
+  cout << endl;
+
+  if (me_CalJetMETRat[CurrPtBin]&&calSumEt > 0) me_CalJetMETRat[CurrPtBin]->Fill(p4calsump.pt()/calSumEt,BinWt);
+
   if (me_nCalJets[CurrPtBin]) me_nCalJets[CurrPtBin]->Fill(float(jetInd));
 
 
@@ -675,16 +721,26 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
   //Get the Corrected CaloJet collection
   Handle<CaloJetCollection> corJets;
   math::XYZTLorentzVector p4cor[2];
+  math::XYZTLorentzVector p4corsump;
+  Double_t corSumEt;
   evt.getByLabel( CorJetAlgorithm, corJets );
 
 
   //Loop over the two leading CorJets and fill a histogram
   jetInd = 0;
+  //p4corsump=0;
+  corSumEt=0;
   for( CaloJetCollection::const_iterator cor = corJets->begin(); cor != corJets->end(); ++ cor ) {
     
+    p4corsump+=cor->p4();
+    corSumEt+=cor->pt();   
+
 
     if (jetInd<2) {
-    p4cor[jetInd]=cor->p4();
+      p4cor[jetInd]=cor->p4();
+    }
+
+    if (jetInd<1) {
       if (me_LptCorAll[CurrPtBin]) me_LptCorAll[CurrPtBin]->Fill( cor->pt(),BinWt );   
       if (me_LptCorLow[CurrPtBin]) me_LptCorLow[CurrPtBin]->Fill( cor->pt(),BinWt );
 
@@ -738,6 +794,14 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
     jetInd++;
   }
 
+  cout <<  " CorJetsumEt: " << corSumEt << " Et: " << p4corsump.pt(); 
+  if (corSumEt > 0) cout << " Ratio: " << p4corsump.pt()/corSumEt;
+  cout << endl;
+
+  if (me_CorJetMETRat[CurrPtBin]&&corSumEt > 0) me_CorJetMETRat[CurrPtBin]->Fill(p4corsump.pt()/corSumEt,BinWt);
+
+  
+
   if (me_nCorJets[CurrPtBin]) me_nCorJets[CurrPtBin]->Fill(float(jetInd));
 
 
@@ -756,6 +820,29 @@ if (me_CorDjM[CurrPtBin]) me_CorDjM[CurrPtBin]->Fill((p4cor[0]+p4cor[1]).mass(),
     if (me_CorPtPtBB[CurrPtBin]) me_CorPtPtBB[CurrPtBin]->Fill(p4cor[0].pt(),p4cor[1].pt());
 
    } 
+
+
+
+  //Get the calo Met collection
+  Handle<CaloMETCollection> caloMets;
+  //math::XYZTLorentzVector p4cor[2];
+  evt.getByLabel( "met", caloMets );
+
+  Int_t metInd=0;
+for( CaloMETCollection::const_iterator met = caloMets->begin(); met != caloMets->end(); ++ met ) {
+
+  metInd++;
+  cout << "MET: " <<metInd << " sumEt: " << met->et() << " Et: " << met->sumEt(); 
+  if (met->sumEt() > 0) cout << " Ratio: " << met->et()/met->sumEt();
+  cout << endl;
+ 
+  if (me_CaloMETRat[CurrPtBin] && met->sumEt()>0) me_CaloMETRat[CurrPtBin]->Fill(met->et()/met->sumEt(),BinWt);
+
+}
+
+
+  
+  
 
 usleep(100000);
 

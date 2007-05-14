@@ -91,6 +91,7 @@ private:
   BinnedMEset me_etaGenLowpt;
   BinnedMEset me_phiGen;
   BinnedMEset me_nGenJets;
+  BinnedMEset me_GenJetMETRat;
 
   BinnedMEset me_LptCalAll;
   BinnedMEset me_LptCalLow;
@@ -124,6 +125,7 @@ private:
   BinnedMEset me_CalPtPt;
   BinnedMEset me_CalPtPtBB;
   BinnedMEset me_nCalJets;
+  BinnedMEset me_CalJetMETRat;
 
 
   BinnedMEset me_LptCorAll;
@@ -158,6 +160,9 @@ private:
   BinnedMEset me_CorPtPt;
   BinnedMEset me_CorPtPtBB;
   BinnedMEset me_nCorJets;
+  BinnedMEset me_CorJetMETRat;
+
+  BinnedMEset me_CaloMETRat;
 
 };
 #endif
