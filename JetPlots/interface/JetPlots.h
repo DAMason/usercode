@@ -23,7 +23,11 @@ protected:
 private:
   
   bool BinIsBooked[21];
-  std::string CaloJetAlgorithm, GenJetAlgorithm, CorJetAlgorithm, label_;
+  std::string CaloJetAlgorithm, GenJetAlgorithm, CorJetAlgorithm, HepMCProductName, WeightList, OutFileName, label_;
+
+  
+  
+
   DaqMonitorBEInterface* dbe_;
   //MonitorElement* me_ptHatAll;
   //MonitorElement* me_ptHatLow;

@@ -40,7 +40,10 @@ using namespace std;
   JetPlots::JetPlots( const ParameterSet & cfg ) :
   CaloJetAlgorithm( cfg.getParameter<string>( "CaloJetAlgorithm" ) ), 
   GenJetAlgorithm( cfg.getParameter<string>( "GenJetAlgorithm" ) ),
-  CorJetAlgorithm( cfg.getParameter<string>( "CorJetAlgorithm") )
+  CorJetAlgorithm( cfg.getParameter<string>( "CorJetAlgorithm") ),
+  HepMCProductName( cfg.getParameter<string>( "HepMcProductName") ),
+  WeightList( cfg.getParameter<string>( "WeightList") ),
+  OutFileName( cfg.getParameter<string>( "OutFileName") )
   {
   }
 
@@ -441,7 +444,28 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
 
   float PtLowEdge[21]={0,15,20,30,50,80,120,170,230,300,380,470,600,800,1000,1400,1800,2200,2600,3000,3500};
   float PtHiEdge[21]={15,20,30,50,80,120,170,230,300,380,470,600,800,1000,1400,1800,2200,2600,3000,3500,14000};
-  float BinXsec[21]={5.52E+01,1.46E+00,6.32E-01,1.63E-01,2.16E-02,3.08E-03,4.94E-04,1.01E-04,2.45E-05,6.24E-06,1.78E-06,6.83E-07,2.04E-07,3.51E-08,1.09E-08,1.06E-09,1.45E-10,2.38E-11,4.29E-12,8.44E-13,1.08E-13};
+  float BinXsec[21]={0};
+  float BinXsecQCD[21]={5.52E+01,1.46E+00,6.32E-01,1.63E-01,2.16E-02,3.08E-03,4.94E-04,1.01E-04,2.45E-05,6.24E-06,1.78E-06,6.83E-07,2.04E-07,3.51E-08,1.09E-08,1.06E-09,1.45E-10,2.38E-11,4.29E-12,8.44E-13,1.08E-13};
+  float BinXsec5TeV[21]={4797,1.492,0.6377,0.1553,0.02092,0.002939,0.0004966,0.0001007,2.376e-05,6.345e-06,1.88e-06,6.864e-07,2.052e-07,3.898e-08,1.609e-08,4.126e-09,1.716e-09,7.464e-10,3.093e-10,1.296e-10,3.834e-11};
+  float BinXsec10TeV[21]={4797,1.492,0.6377,0.1553,0.02092,0.002939,0.0004966,0.0001007,2.378e-05,6.359e-06,1.879e-06,6.853e-07,2.017e-07,3.539e-08,1.075e-08,1.124e-09,2.05e-10,5.716e-11,1.95e-11,7.707e-12,2.232e-12};
+  float BinXsec15TeV[21]={4797,1.492,0.6381,0.1553,0.0209,0.002942,0.000497,0.0001009,2.376e-05,6.384e-06,1.887e-06,6.873e-07,2.014e-07,3.538e-08,1.073e-08,1.026e-09,1.443e-10,2.639e-11,6.048e-12,1.795e-12,4.394e-13};
+
+
+  if (WeightList.compare("5TeVContact") == 0) {
+    cout << "5TeV!"<< endl;
+    for (int i=0;i<21;i++) BinXsec[i]=BinXsec5TeV[i];
+  } else if (WeightList.compare("10TeVContact") == 0) {
+    for (int i=0;i<21;i++) BinXsec[i]=BinXsec10TeV[i];
+    cout << "10TeV!"<< endl;
+  } else if (WeightList.compare("15TeVContact") == 0) {
+    for (int i=0;i<21;i++) BinXsec[i]=BinXsec15TeV[i];
+    cout << "15TeV!"<< endl;
+  } else {
+    cout << "QCD !" << endl;
+    for (int i=0;i<21;i++) BinXsec[i]=BinXsecQCD[i];
+  }
+
+
 
   int CurrPtBin=0;
   float BinWt=0.;
@@ -455,43 +479,53 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
     // edmHepMCProduct_VtxSmeared  where VtxSmeared appears to have been the source name, edmHepMCProduct
     // the type
 
-    evt.getByLabel("VtxSmeared" ,mcTruth);
+    //    evt.getByLabel("VtxSmeared" ,mcTruth);
+    evt.getByLabel(HepMCProductName, mcTruth);
 
-  HepMC::GenEvent * myGenEvent = new HepMC::GenEvent(*(mcTruth->GetEvent()));
+    if (&mcTruth) {
 
-  //int procid= myGenEvent->signal_process_id();
-  double evtscale = myGenEvent->event_scale();
+     HepMC::GenEvent * myGenEvent = new HepMC::GenEvent(*(mcTruth->GetEvent()));
+
+     //int procid= myGenEvent->signal_process_id();
+     double evtscale = myGenEvent->event_scale();
 
   //std::cout<<"ProcessID was "<<procid<<" and scale was "<<evtscale<<" GeV "<<endl;
 
 
-  for (int j=0;j<21;j++) {
-    if (evtscale>PtLowEdge[j]&&evtscale<=PtHiEdge[j]) {
-      CurrPtBin=j;
-      BinWt=BinXsec[j];
-    }
-  }
-
-  if (!BinIsBooked[CurrPtBin]){
-    bookBinnedMEs(CurrPtBin);
-    BinIsBooked[CurrPtBin]=true;
+     for (int j=0;j<21;j++) {
+      if (evtscale>PtLowEdge[j]&&evtscale<=PtHiEdge[j]) {
+        CurrPtBin=j;
+        BinWt=BinXsec[j];
       }
+     }
 
-  if (me_ptHatAll[CurrPtBin]) me_ptHatAll[CurrPtBin]->Fill(evtscale,BinWt);   
-  if (me_ptHatLow[CurrPtBin]) me_ptHatLow[CurrPtBin]->Fill(evtscale,BinWt);   
-
-
+     cout << WeightList << ": " << BinWt << endl;
 
 
+    if (!BinIsBooked[CurrPtBin]){
+     bookBinnedMEs(CurrPtBin);
+     BinIsBooked[CurrPtBin]=true;
+       }
+
+    if (me_ptHatAll[CurrPtBin]) me_ptHatAll[CurrPtBin]->Fill(evtscale,BinWt);   
+    if (me_ptHatLow[CurrPtBin]) me_ptHatLow[CurrPtBin]->Fill(evtscale,BinWt);   
+    } else {
+      cout << "HepMCProduct: "<< HepMCProductName << " not found ! giving up!" << endl;
+      return;
+    }
 
 
 
+ 
+  int jetInd = 0; 
+  Int_t genjeterrcount;
+
+  try {
   //Get the GenJet collection
   Handle<GenJetCollection> genJets;
   evt.getByLabel( GenJetAlgorithm, genJets );
 
-  //Loop over the two leading GenJets and fill some histograms
-  int jetInd = 0;
+
   math::XYZTLorentzVector p4gen[2];
   math::XYZTLorentzVector p4gensump;
   Double_t genSumEt = 0;
@@ -610,16 +644,22 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
 
     }
  
-  
+  } catch (...) {
+    genjeterrcount++;
+    if (genjeterrcount<10) cout << "no GenJets! " << endl;
+  } 
 
 
-
+  Int_t calojeterrcount;
   //Get the CaloJet collection
   Handle<CaloJetCollection> caloJets;
   math::XYZTLorentzVector p4cal[2];
   math::XYZTLorentzVector p4calsump;
   Double_t calSumEt;
+
+  try {
   evt.getByLabel( CaloJetAlgorithm, caloJets );
+  
 
   //Loop over the two leading CaloJets and fill some histograms
   jetInd = 0;
@@ -716,15 +756,19 @@ void JetPlots::analyze( const Event& evt, const EventSetup& es) {
 
    }
 
-
-
+  }  catch (...) {
+    calojeterrcount++;
+    if (calojeterrcount<10) cout << "no CaloJets! " << endl;
+  }
+  
+  Int_t corjeterrcount;
   //Get the Corrected CaloJet collection
   Handle<CaloJetCollection> corJets;
   math::XYZTLorentzVector p4cor[2];
   math::XYZTLorentzVector p4corsump;
   Double_t corSumEt;
+  try {
   evt.getByLabel( CorJetAlgorithm, corJets );
-
 
   //Loop over the two leading CorJets and fill a histogram
   jetInd = 0;
@@ -820,26 +864,34 @@ if (me_CorDjM[CurrPtBin]) me_CorDjM[CurrPtBin]->Fill((p4cor[0]+p4cor[1]).mass(),
     if (me_CorPtPtBB[CurrPtBin]) me_CorPtPtBB[CurrPtBin]->Fill(p4cor[0].pt(),p4cor[1].pt());
 
    } 
+  }   catch (...) {
+    corjeterrcount++;
+    if (corjeterrcount<10) cout << "no Corrected CaloJets! " << endl;
+  }
 
-
-
+  Int_t calometerrcount;
   //Get the calo Met collection
   Handle<CaloMETCollection> caloMets;
   //math::XYZTLorentzVector p4cor[2];
+  try {
   evt.getByLabel( "met", caloMets );
 
-  Int_t metInd=0;
-for( CaloMETCollection::const_iterator met = caloMets->begin(); met != caloMets->end(); ++ met ) {
+   Int_t metInd=0;
+   for( CaloMETCollection::const_iterator met = caloMets->begin(); met != caloMets->end(); ++ met ) {
 
-  metInd++;
-  cout << "MET: " <<metInd << " sumEt: " << met->et() << " Et: " << met->sumEt(); 
-  if (met->sumEt() > 0) cout << " Ratio: " << met->et()/met->sumEt();
+   metInd++;
+   cout << "MET: " <<metInd << " sumEt: " << met->et() << " Et: " << met->sumEt(); 
+   if (met->sumEt() > 0) cout << " Ratio: " << met->et()/met->sumEt();
   cout << endl;
  
-  if (me_CaloMETRat[CurrPtBin] && met->sumEt()>0) me_CaloMETRat[CurrPtBin]->Fill(met->et()/met->sumEt(),BinWt);
+   if (me_CaloMETRat[CurrPtBin] && met->sumEt()>0) me_CaloMETRat[CurrPtBin]->Fill(met->et()/met->sumEt(),BinWt);
 
-}
 
+   }
+  }    catch (...) {
+    calometerrcount++;
+    if (calometerrcount<10) cout << "no CaloMet! " << endl;
+  }
 
   
   
@@ -852,7 +904,6 @@ void JetPlots::endJob() {
 
   //Write out the histogram file.
   //m_file->Write(); 
-
-  dbe_->save("JetPlots.root");
+  if (OutFileName.compare("")>0) dbe_->save(OutFileName);
 
 }
