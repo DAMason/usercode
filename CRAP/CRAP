@@ -1,0 +1,259 @@
+#! /usr/bin/perl -w
+#  
+#  Cheezy script to submit cmsRun jobs on blocks of files via
+#  local condor queue.  
+#   
+#  DAM 5/15/07 or therabouts
+#
+# in case you're wondering, its
+# Condor Running Analysis Package
+# dubious English to yielding the desired acronym
+
+
+# where to stick results -- individual jobs get dropped in subdirs of this
+$WORKINGSUBDIR="5TeVfullrun2";
+
+# full search path for files to run on -- assumed in dcache at the moment...
+$FILEPATH="/pnfs/cms/WAX/2/manoj/work/after-phd/QcdDijet/MCData/GeneratorFiles/5TeV/*/*";
+#$FILEPATH="RecoJets/*";
+
+# number of files each job sucks in
+$FILESPERJOB=4;
+
+# Pset file 
+$INPUTCFGFILE="simplecontactnodqm.cfg";
+
+# note at this point the POOLSOURCE will be completely replaced...
+
+# These are strings to either append the job number or insert before the
+# last "." character (i.e. inserting job number before extension in filename)
+# this is a list -- comma delimeted...  etc.
+
+@STRINGSTOINSERTJOBNUMBER=("5TeVContact.root");
+
+
+# set this to anything nonzero to actually submit the condor jobs...
+# all will get submitted in one shot -- not submitting just produces
+# the individual cfg's in each subdir and their jdl's
+$ACTUALLYSUBMITTHINGS=1;
+
+
+
+
+#========================================================
+#=========BELOW HERE BE DRAGONS==========================
+#========================================================
+
+unless (-e $WORKINGSUBDIR) {
+    print "$WORKINGSUBDIR doesn't exist -- creating it...\n";
+    system ("mkdir $WORKINGSUBDIR");
+}
+
+print "Copying prototype config $INPUTCFGFILE into $WORKINGSUBDIR...\n";
+system ("cp $INPUTCFGFILE $WORKINGSUBDIR");
+$INPUTCFGFILE=$WORKINGSUBDIR."/".$INPUTCFGFILE;
+
+print "OK -- looking for files in $FILEPATH\n";
+
+@filelist=split /\s+/,`ls -1 $FILEPATH`;
+
+$nfiles=$#filelist;
+
+print "Found $nfiles files in there...\n";
+
+$njobs=int($nfiles/$FILESPERJOB)+1;
+
+print "Trying to split into $njobs jobs, with up to $FILESPERJOB files per job.\n"; 
+
+@filestack=@filelist;
+
+print "filestack: $#filestack\n";
+
+for ($j=0;$j<$njobs;$j++) {
+    $njobfiles[$j]=0;
+    for ($i=0;$i<$FILESPERJOB;$i++){
+	if ($#filestack) {
+	    $jobfilelist[$j][$i]=pop(@filestack);
+            $njobfiles[$j]++;
+        }
+    }
+    print "$njobfiles[$j] files go into job $j...\n";
+}
+
+
+# files divided up -- now we parse the cfg file...
+
+open INCFG,"<$INPUTCFGFILE";
+
+
+$inPoolSource=0;
+$PoolSourceCurlyBrackets=0;
+$outCfgPrototype="";
+
+print "Parsing $INPUTCFGFILE \n";
+
+while (<INCFG>){
+#    print "...$_";
+
+
+if ($inPoolSource) {
+#  print "inPoolSource was true...\n";
+#  print "In Poolsource -- curly brackets=$PoolSourceCurlyBrackets\n";
+  $opencurlies=0;
+  $closedcurlies=0;
+  while (/(\{)/gi) {
+      $opencurlies++;
+  }
+  while (/(\})/gi) {
+      $closedcurlies++;
+  }
+  $PoolSourceCurlyBrackets+=($opencurlies-$closedcurlies);
+  if ($PoolSourceCurlyBrackets<=0) {
+      $inPoolSource=undef;
+     $outCfgPrototype.="
+      source = PoolSource \{
+        untracked int32 maxEvents = -1
+        untracked vstring fileNames = \{
+           [[[FILELIST]]]
+        \}
+      \} 
+       ";
+ }
+
+
+  next;
+  } 
+
+
+
+
+#print "nomatch\n";
+
+if (m/PoolSource/) {
+    print "matched PoolSource...\n";
+  $opencurlies=0;
+  $closedcurlies=0;
+  while (/(\{)/gi) {
+      $opencurlies++;
+  }
+  while (/(\})/gi) {
+      $closedcurlies++;
+  }
+  $PoolSourceCurlyBrackets+=($opencurlies-$closedcurlies);
+
+
+   $inPoolSource="true";
+   next;
+}
+
+$outCfgPrototype.=$_;
+
+}
+
+close INCFG;
+
+#print "Output cfg:\n";
+#print "$outCfgPrototype\n";
+
+# OK -- so now we have a subdir to stick the jobs -- now we make each job's subdirs and
+# populate with cfg's and jdl's.
+
+
+
+
+for ($j=0;$j<$njobs;$j++) {
+    unless ($njobfiles[$j]>0) {
+        next;
+    }
+    $jobworkingdir[$j]=$WORKINGSUBDIR."/".$j;
+    unless (-e $jobworkingdir[$j]) {
+        system ("mkdir $jobworkingdir[$j]");
+    }
+    open JOBCFG,">$jobworkingdir[$j]/Pset.cfg";
+    foreach $line (split /\n/,$outCfgPrototype) {
+
+        foreach $thing (@STRINGSTOINSERTJOBNUMBER)
+	  {
+	      if ($line=~m/$thing/) {
+		  if ($thing=~m/(\w+)\.(\w+)/) {
+		      $newthing=$1.".$j.".$2;
+		  } else {
+                      $newthing=$thing."-$j";
+		  }
+                  $line=~s/$thing/$newthing/;
+	      }
+	  }
+
+                      
+	if ($line=~m/\[\[\[FILELIST\]\]\]/) {
+	    for ($i=0;$i<$njobfiles[$j];$i++) {
+              if ($i<$njobfiles[$j]-1) { 
+		  print JOBCFG "\'dcap:/$jobfilelist[$j][$i]\',\n";
+              } else {
+                  print JOBCFG "\'dcap:/$jobfilelist[$j][$i]\'\n";
+              }
+	  }
+	} else {
+	    print JOBCFG "$line\n";
+        }
+    }
+    close JOBCFG;
+
+    $currworkdir=`pwd`;
+    chop($currworkdir);
+    $fulljobworkdir=$currworkdir."/".$jobworkingdir[$j];
+
+    open JOBSCRIPT,">$jobworkingdir[$j]/job.$j.sh";
+    print JOBSCRIPT "  #!/bin/bash
+  cd $fulljobworkdir
+  printenv
+  export SCRAM_ARCH=slc3_ia32_gcc323
+  . /uscms/osg/app/cmssoft/cmsset_default.sh CMSSW_1_3_0_pre5
+  printenv
+  eval \`scramv1 runtime -sh\`
+  cmsRun Pset.cfg
+";
+    close JOBSCRIPT;
+    system "chmod +x $jobworkingdir[$j]/job.$j.sh";
+ 
+
+
+    
+    open JOBJDL, ">$jobworkingdir[$j]/job.$j.jdl";
+    
+
+
+
+    print JOBJDL "
+universe = vanilla
+Executable=$fulljobworkdir/job.$j.sh
+Requirements   = Memory >= 199 && OpSys == \"LINUX\"&& (Arch != \"DUMMY\" )
+Should_Transfer_Files = NO
+Output = $fulljobworkdir/\$(Cluster).\$(Process).stdout
+Error = $fulljobworkdir/\$(Cluster).\$(Process).stderr
+Log =  $fulljobworkdir/\$(Cluster).\$(Process).log
+notify_user = \${LOGNAME}\@FNAL.GOV
++LENGTH=\"SHORT\"
+Queue 1
+";
+
+    close JOBJDL;
+
+    if ($ACTUALLYSUBMITTHINGS) {
+	$myoutput=`condor_submit $jobworkingdir[$j]/job.$j.jdl`;
+        print "$myoutput\n";
+    }
+
+
+}
+
+    
+
+
+  
+
+
+
+ 
+  
+
