@@ -25,29 +25,14 @@ private:
   bool BinIsBooked[21];
   std::string CaloJetAlgorithm, GenJetAlgorithm, CorJetAlgorithm, HepMCProductName, WeightList, OutFileName, label_;
 
-  
-  
+  Double_t METRatCut;
+
+  Int_t genjeterrcount,corjeterrcount,calojeterrcount,calometerrcount;  
+
+  Int_t NeventsProc;
 
   DaqMonitorBEInterface* dbe_;
-  //MonitorElement* me_ptHatAll;
-  //MonitorElement* me_ptHatLow;
-  //MonitorElement* me_ptGenAll;
-  //MonitorElement* me_ptGenLow;
-  //MonitorElement* me_ptGenAllEtaB;
-  //MonitorElement* me_ptGenLowEtaB;
-  //MonitorElement* me_ptGenAllEtaBE;
-  //MonitorElement* me_ptGenLowEtaBE;
-  //MonitorElement* me_ptGenAllEtaE;
-  //MonitorElement* me_ptGenLowEtaE;
-  //MonitorElement* me_ptGenAllEtaEF;
-  //MonitorElement* me_ptGenLowEtaEF;
-  //MonitorElement* me_ptGenAllEtaF;
-  //MonitorElement* me_ptGenLowEtaF;
-  //MonitorElement* me_etaGen;
-  //MonitorElement* me_etaGenLowpt;
-  //MonitorElement* me_phiGen;
-
-
+ 
   typedef std::map< char*, int > maptype;
   maptype meRegistry;
 
@@ -97,6 +82,25 @@ private:
   BinnedMEset me_nGenJets;
   BinnedMEset me_GenJetMETRat;
 
+  BinnedMEset me_ptGenAllMET30;
+  BinnedMEset me_ptGenLowMET30;
+  BinnedMEset me_ptGenAllEtaBMET30;
+  BinnedMEset me_ptGenLowEtaBMET30;
+  BinnedMEset me_ptGenAllEtaBEMET30;
+  BinnedMEset me_ptGenLowEtaBEMET30;
+  BinnedMEset me_ptGenAllEtaEMET30;
+  BinnedMEset me_ptGenLowEtaEMET30;
+  BinnedMEset me_ptGenAllEtaEFMET30;
+  BinnedMEset me_ptGenLowEtaEFMET30;
+  BinnedMEset me_ptGenAllEtaFMET30;
+  BinnedMEset me_ptGenLowEtaFMET30;
+  BinnedMEset me_GenDjMEtaBBMET30;
+  BinnedMEset me_GenDjMMET30;
+  BinnedMEset me_etaGenMET30;
+  BinnedMEset me_etaGenLowptMET30;
+  BinnedMEset me_phiGenMET30;
+  BinnedMEset me_nGenJetsMET30;
+
   BinnedMEset me_LptCalAll;
   BinnedMEset me_LptCalLow;
   BinnedMEset me_LptCalAllEtaB;
@@ -131,6 +135,24 @@ private:
   BinnedMEset me_nCalJets;
   BinnedMEset me_CalJetMETRat;
 
+  BinnedMEset me_ptCalAllMET30;
+  BinnedMEset me_ptCalLowMET30;
+  BinnedMEset me_ptCalAllEtaBMET30;
+  BinnedMEset me_ptCalLowEtaBMET30;
+  BinnedMEset me_ptCalAllEtaBEMET30;
+  BinnedMEset me_ptCalLowEtaBEMET30;
+  BinnedMEset me_ptCalAllEtaEMET30;
+  BinnedMEset me_ptCalLowEtaEMET30;
+  BinnedMEset me_ptCalAllEtaEFMET30;
+  BinnedMEset me_ptCalLowEtaEFMET30;
+  BinnedMEset me_ptCalAllEtaFMET30;
+  BinnedMEset me_ptCalLowEtaFMET30;
+  BinnedMEset me_CalDjMEtaBBMET30;
+  BinnedMEset me_CalDjMMET30;
+  BinnedMEset me_etaCalMET30;
+  BinnedMEset me_etaCalLowptMET30;
+  BinnedMEset me_phiCalMET30;
+  BinnedMEset me_nCalJetsMET30; 
 
   BinnedMEset me_LptCorAll;
   BinnedMEset me_LptCorLow;
@@ -166,7 +188,28 @@ private:
   BinnedMEset me_nCorJets;
   BinnedMEset me_CorJetMETRat;
 
+  BinnedMEset me_ptCorAllMET30;
+  BinnedMEset me_ptCorLowMET30;
+  BinnedMEset me_ptCorAllEtaBMET30;
+  BinnedMEset me_ptCorLowEtaBMET30;
+  BinnedMEset me_ptCorAllEtaBEMET30;
+  BinnedMEset me_ptCorLowEtaBEMET30;
+  BinnedMEset me_ptCorAllEtaEMET30;
+  BinnedMEset me_ptCorLowEtaEMET30;
+  BinnedMEset me_ptCorAllEtaEFMET30;
+  BinnedMEset me_ptCorLowEtaEFMET30;
+  BinnedMEset me_ptCorAllEtaFMET30;
+  BinnedMEset me_ptCorLowEtaFMET30;
+  BinnedMEset me_CorDjMEtaBBMET30;
+  BinnedMEset me_CorDjMMET30;
+  BinnedMEset me_etaCorMET30; 
+  BinnedMEset me_etaCorLowptMET30;
+  BinnedMEset me_phiCorMET30;
+  BinnedMEset me_nCorJetsMET30;
+
+
   BinnedMEset me_CaloMETRat;
+  BinnedMEset me_CaloMETRatMET30;
 
 };
 #endif
