@@ -13,7 +13,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Mon May 12 11:02:06 CDT 2008
-// $Id: Beam.cc,v 1.1 2009/11/29 06:53:38 dmason Exp $
+// $Id: Beam.cc,v 1.2 2009/11/29 07:44:32 dmason Exp $
 //
 //
 
@@ -568,7 +568,7 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 
 // if (Jet15Accept) mTree->Fill(); 
- if (BSCAnything) mTree->Fill(); 
+ if (BSCAnything||Jet15Accept) mTree->Fill(); 
 
 
 }
