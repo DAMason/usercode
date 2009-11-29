@@ -10,7 +10,7 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 
 SimpleMemoryCheck = cms.Service("SimpleMemoryCheck", ignoreTotal = cms.untracked.int32(1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
-process.TFileService = cms.Service("TFileService", fileName = cms.string("CRAFTuple.root"))
+process.TFileService = cms.Service("TFileService", fileName = cms.string("BeamTuple.root"))
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 

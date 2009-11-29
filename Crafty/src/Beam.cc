@@ -13,7 +13,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Mon May 12 11:02:06 CDT 2008
-// $Id: Beam.cc,v 1.1 2009/11/13 05:04:18 dmason Exp $
+// $Id: Beam.cc,v 1.1 2009/11/29 06:53:38 dmason Exp $
 //
 //
 
@@ -243,6 +243,9 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 //  For the first collisions the technical trigger bits were interesting
 //  specifically bits 40 & 41...
 
+  bool BSCAnything = false;
+  bool RPCAnything = false;
+  bool BSCBit4041 = false;
   
   Handle< L1GlobalTriggerReadoutRecord > gtRecord;
   iEvent.getByLabel( "gtDigis", gtRecord);
@@ -255,8 +258,23 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   for (unsigned int itrig=0;itrig < nL1Paths; ++itrig) {
      //if (tWord.at(itrig)) cout << "Bit: " << itrig << " Passed! " << endl;
-     if (tWord.at(itrig)) h_First100LumisL1TechTriggerMonitor[currentRun]->Fill(double(tlumi),double(itrig),1.0);
+     if (tWord.at(itrig)) {
+       h_First100LumisL1TechTriggerMonitor[currentRun]->Fill(double(tlumi),double(itrig),1.0);
+       if (itrig==40 || itrig==41) BSCBit4041=true;
+       if (itrig>=32 && itrig <= 43 ) BSCAnything = true;
+       if (itrig>=24 && itrig <= 30 ) RPCAnything = true;
+       }
    }
+
+      tHLTBits[1]=0;
+      tHLTBits[2]=0;
+      tHLTBits[3]=0;
+
+
+       if (BSCBit4041) tHLTBits[1]=1;
+       if (BSCAnything) tHLTBits[2]=1;
+       if (RPCAnything) tHLTBits[3]=1;
+
 
   //Trigger bits...
 
@@ -271,7 +289,6 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   bool Jet15Accept = false;
   bool Jet30Accept = false;
   bool Jet50Accept = false;
-
 
 
 
@@ -306,14 +323,14 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
            if (trigResults.product()->accept(itrig)) Jet50Accept=true;
         }
         
-      tHLTBits[0]=0;
-      tHLTBits[1]=0;
-      tHLTBits[2]=0;
+      tHLTBits[3]=0;
+      tHLTBits[4]=0;
+      tHLTBits[5]=0;
 
 
-       if (Jet15Accept) tHLTBits[0]=1;
-       if (Jet30Accept) tHLTBits[1]=1;
-       if (Jet50Accept) tHLTBits[2]=1;
+       if (Jet15Accept) tHLTBits[3]=1;
+       if (Jet30Accept) tHLTBits[4]=1;
+       if (Jet50Accept) tHLTBits[5]=1;
 
       }
     }
@@ -550,7 +567,8 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 
 
- if (Jet15Accept) mTree->Fill(); 
+// if (Jet15Accept) mTree->Fill(); 
+ if (BSCAnything) mTree->Fill(); 
 
 
 }
