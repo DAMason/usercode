@@ -13,7 +13,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Mon May 12 11:02:06 CDT 2008
-// $Id: Beam.cc,v 1.2 2009/11/29 07:44:32 dmason Exp $
+// $Id: Beam.cc,v 1.3 2009/11/29 07:51:30 dmason Exp $
 //
 //
 
@@ -174,7 +174,7 @@ class Beam : public edm::EDAnalyzer {
       float teta[2],tphi[2];
       float tMET,tSumET,tPtHat; 
       int tHLTBits[6],trun,tlumi,tevent;
-
+      int tNJets6,tNJets15,tNJets30;
 };
 
 //
@@ -266,14 +266,14 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        }
    }
 
+      tHLTBits[0]=0;
       tHLTBits[1]=0;
       tHLTBits[2]=0;
-      tHLTBits[3]=0;
 
 
+       if (BSCAnything) tHLTBits[0]=1;
        if (BSCBit4041) tHLTBits[1]=1;
-       if (BSCAnything) tHLTBits[2]=1;
-       if (RPCAnything) tHLTBits[3]=1;
+       if (RPCAnything) tHLTBits[2]=1;
 
 
   //Trigger bits...
@@ -289,7 +289,7 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   bool Jet15Accept = false;
   bool Jet30Accept = false;
   bool Jet50Accept = false;
-
+  bool L1Jet6Accept = false;
 
 
 
@@ -313,6 +313,9 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
             h_First1000LumisTriggerMonitor[currentRun]->Fill(double(tlumi),double(itrig),1.0);
         }
 //        if (triggerNames.triggerName(itrig)=="HLT_Jet30") {
+        if (triggerNames.triggerName(itrig)=="HLT_L1Jet6U") {
+           if (trigResults.product()->accept(itrig)) L1Jet6Accept=true;
+        }
         if (triggerNames.triggerName(itrig)=="HLT_Jet15U") {
            if (trigResults.product()->accept(itrig)) Jet15Accept=true;
         }
@@ -328,9 +331,12 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       tHLTBits[5]=0;
 
 
-       if (Jet15Accept) tHLTBits[3]=1;
-       if (Jet30Accept) tHLTBits[4]=1;
-       if (Jet50Accept) tHLTBits[5]=1;
+//       if (Jet15Accept) tHLTBits[3]=1;
+//       if (Jet30Accept) tHLTBits[4]=1;
+//       if (Jet50Accept) tHLTBits[5]=1;
+       if (L1Jet6Accept) tHLTBits[3]=1;
+       if (Jet15Accept)   tHLTBits[4]=1;
+       if (Jet30Accept)   tHLTBits[5]=1;
 
       }
     }
@@ -441,6 +447,10 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   math::XYZTLorentzVector p4Calo;
   Double_t CaloSumEt;
 
+  tNJets6=0;
+  tNJets15=0;
+  tNJets30=0;
+
   for (CaloJetCollection::const_iterator cal = caloJets->begin(); cal != caloJets->end(); ++cal) {
 
     if (h_CaloJetPt[currentRun]) h_CaloJetPt[currentRun]->Fill(cal->et(),1.0);
@@ -457,6 +467,10 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     if (h_CaloJetPtCaloMETRatio[currentRun]) h_CaloJetPtCaloMETRatio[currentRun]->Fill(cal->et(),CaloMETRatio,1.0);
 
+
+    if (cal->et()>6.0) tNJets6++;
+    if (cal->et()>15.0) tNJets15++;
+    if (cal->et()>30.0) tNJets30++;
 
     if (jetInd<2) {
 
@@ -568,7 +582,7 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 
 // if (Jet15Accept) mTree->Fill(); 
- if (BSCAnything||Jet15Accept) mTree->Fill(); 
+ if (BSCAnything||L1Jet6Accept) mTree->Fill(); 
 
 
 }
@@ -746,6 +760,9 @@ Beam::beginJob(const edm::EventSetup&)
 // mTree->Branch("nTrkCalo" ,tntrkCalo ,"NtrkCalo[2]/F");
  mTree->Branch("met"      ,&tMET     ,"MET/F");
  mTree->Branch("sumet"    ,&tSumET   ,"SumET/F");
+ mTree->Branch("nJets6"   ,&tNJets6  ,"Njets6/I");
+ mTree->Branch("nJets15"   ,&tNJets15  ,"Njets15/I");
+ mTree->Branch("nJets30"   ,&tNJets30  ,"Njets30/I");
  mTree->Branch("HLTBits"  ,tHLTBits  ,"HLTBits[6]/I");
 
 
