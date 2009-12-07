@@ -13,7 +13,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Mon May 12 11:02:06 CDT 2008
-// $Id: Beam.cc,v 1.3 2009/11/29 07:51:30 dmason Exp $
+// $Id: Beam.cc,v 1.4 2009/11/30 03:20:08 dmason Exp $
 //
 //
 
@@ -35,6 +35,7 @@
 #include "DataFormats/CaloTowers/interface/CaloTowerCollection.h"
 #include "DataFormats/JetReco/interface/CaloJetCollection.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"
+#include "DataFormats/JetReco/interface/JetExtendedAssociation.h"
 
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
@@ -173,8 +174,10 @@ class Beam : public edm::EDAnalyzer {
       float tpx[2],tpy[2],tpz[2],tpt[2],tE[2],tEmf[2],tNtrkVx[2],tNtrkCalo[2];
       float teta[2],tphi[2];
       float tMET,tSumET,tPtHat; 
-      int tHLTBits[6],trun,tlumi,tevent;
-      int tNJets6,tNJets15,tNJets30;
+      unsigned int tHLTBits[6],trun,tlumi,tevent;
+      unsigned int tBx;
+      unsigned int tNJets6,tNJets15,tNJets30;
+      
 };
 
 //
@@ -220,6 +223,7 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    currentRun=iEvent.id().run();
    trun=currentRun;
    tevent=iEvent.id().event();
+   tBx=iEvent.bunchCrossing();
    tlumi=iEvent.luminosityBlock();
 
    /*
@@ -439,7 +443,12 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   }
 
   Handle<CaloJetCollection> caloJets;
-  iEvent.getByLabel("sisCone5CaloJets",caloJets);
+//  iEvent.getByLabel("sisCone5CaloJets",caloJets);
+  iEvent.getByLabel("iterativeCone5CaloJets",caloJets);
+
+  Handle<JetExtendedAssociation::Container> jetExtender;
+  iEvent.getByLabel("JetExtender",jetExtender);
+
 
   int jetInd = 0;
   Double_t MaxJet = 0.;
@@ -482,6 +491,11 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       teta[jetInd]=cal->eta();
       tphi[jetInd]=cal->phi();
       tEmf[jetInd]=cal->emEnergyFraction();
+
+ 
+      tNtrkVx[jetInd]=JetExtendedAssociation::tracksAtVertexNumber(*jetExtender,*cal);
+      tNtrkCalo[jetInd]=JetExtendedAssociation::tracksAtCaloNumber(*jetExtender,*cal);
+      
 
       if (h_LCaloJetPt[currentRun]) h_LCaloJetPt[currentRun]->Fill(cal->et(),1.0);
       if (Jet30Accept && h_LCaloJetPtJet30trig[currentRun]) h_LCaloJetPtJet30trig[currentRun]->Fill(cal->et(),1.0);
@@ -737,17 +751,16 @@ void Beam::bookHistsForRun(int runNum) {
 
 
 
-
-
 // ------------ method called once each job just before starting event loop  ------------
 void 
 Beam::beginJob(const edm::EventSetup&)
 {
 
  mTree = fs->make<TTree>("analTree","analTree");
- mTree->Branch("run"      ,&trun     ,"run/I");
- mTree->Branch("lumi"     ,&tlumi    ,"lumi/I");
- mTree->Branch("event"    ,&tevent   ,"event/I");
+ mTree->Branch("run"      ,&trun     ,"run/i");
+ mTree->Branch("lumi"     ,&tlumi    ,"lumi/i");
+ mTree->Branch("event"    ,&tevent   ,"event/i");
+ mTree->Branch("bx"       ,&tBx      ,"bx/i");
  mTree->Branch("px"       ,tpx       ,"px[2]/F");
  mTree->Branch("py"       ,tpy       ,"py[2]/F");
  mTree->Branch("pz"       ,tpz       ,"pz[2]/F");
@@ -756,8 +769,8 @@ Beam::beginJob(const edm::EventSetup&)
  mTree->Branch("eta"      ,teta      ,"eta[2]/F");
  mTree->Branch("phi"      ,tphi      ,"phi[2]/F");
  mTree->Branch("emf"      ,tEmf      ,"emf[2]/F");
-// mTree->Branch("nTrkVx"   ,tntrkVx   ,"NtrkVx[2]/F");
-// mTree->Branch("nTrkCalo" ,tntrkCalo ,"NtrkCalo[2]/F");
+ mTree->Branch("nTrkVx"   ,tNtrkVx   ,"NtrkVx[2]/F");
+ mTree->Branch("nTrkCalo" ,tNtrkCalo ,"NtrkCalo[2]/F");
  mTree->Branch("met"      ,&tMET     ,"MET/F");
  mTree->Branch("sumet"    ,&tSumET   ,"SumET/F");
  mTree->Branch("nJets6"   ,&tNJets6  ,"Njets6/I");
