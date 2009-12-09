@@ -13,7 +13,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Mon May 12 11:02:06 CDT 2008
-// $Id: Beam.cc,v 1.4 2009/11/30 03:20:08 dmason Exp $
+// $Id: Beam.cc,v 1.5 2009/12/07 06:13:34 dmason Exp $
 //
 //
 
@@ -171,13 +171,14 @@ class Beam : public edm::EDAnalyzer {
 
       StringCounter NamedTrigCounter;
     
-      float tpx[2],tpy[2],tpz[2],tpt[2],tE[2],tEmf[2],tNtrkVx[2],tNtrkCalo[2];
+      float tpx[2],tpy[2],tpz[2],tpt[2],tE[2],tEmf[2];
       float teta[2],tphi[2];
       float tMET,tSumET,tPtHat; 
       unsigned int tHLTBits[6],trun,tlumi,tevent;
       unsigned int tBx;
       unsigned int tNJets6,tNJets15,tNJets30;
-      
+      unsigned int tNtrkVx[2],tNtrkCalo[2];
+      float tCHFVx[2],tCHFCalo[2];
 };
 
 //
@@ -460,6 +461,23 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   tNJets15=0;
   tNJets30=0;
 
+  for (int i=0;i<2;i++) {
+      tpt[i]=0;
+      tpx[i]=0;
+      tpy[i]=0;
+      tpz[i]=0;
+      tE[i]=0;
+      teta[i]=0;
+      tphi[i]=0;
+      tEmf[i]=0;
+      tNtrkVx[i]=0;
+      tCHFVx[i]=0;
+      tNtrkCalo[i]=0;
+      tCHFCalo[i]=0;
+      }
+
+
+
   for (CaloJetCollection::const_iterator cal = caloJets->begin(); cal != caloJets->end(); ++cal) {
 
     if (h_CaloJetPt[currentRun]) h_CaloJetPt[currentRun]->Fill(cal->et(),1.0);
@@ -494,8 +512,12 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
  
       tNtrkVx[jetInd]=JetExtendedAssociation::tracksAtVertexNumber(*jetExtender,*cal);
-      tNtrkCalo[jetInd]=JetExtendedAssociation::tracksAtCaloNumber(*jetExtender,*cal);
       
+      tNtrkCalo[jetInd]=JetExtendedAssociation::tracksAtCaloNumber(*jetExtender,*cal);
+      if (cal->et()>0) {      
+        tCHFVx[jetInd]=(JetExtendedAssociation::tracksAtVertexP4(*jetExtender,*cal)).pt()/cal->et();
+        tCHFCalo[jetInd]=(JetExtendedAssociation::tracksAtCaloP4(*jetExtender,*cal)).pt()/cal->et();
+        }
 
       if (h_LCaloJetPt[currentRun]) h_LCaloJetPt[currentRun]->Fill(cal->et(),1.0);
       if (Jet30Accept && h_LCaloJetPtJet30trig[currentRun]) h_LCaloJetPtJet30trig[currentRun]->Fill(cal->et(),1.0);
@@ -769,14 +791,16 @@ Beam::beginJob(const edm::EventSetup&)
  mTree->Branch("eta"      ,teta      ,"eta[2]/F");
  mTree->Branch("phi"      ,tphi      ,"phi[2]/F");
  mTree->Branch("emf"      ,tEmf      ,"emf[2]/F");
- mTree->Branch("nTrkVx"   ,tNtrkVx   ,"NtrkVx[2]/F");
- mTree->Branch("nTrkCalo" ,tNtrkCalo ,"NtrkCalo[2]/F");
+ mTree->Branch("nTrkVx"   ,tNtrkVx   ,"NtrkVx[2]/i");
+ mTree->Branch("chfVx"    ,tCHFVx    ,"chfVx[2]/F");
+ mTree->Branch("nTrkCalo" ,tNtrkCalo ,"NtrkCalo[2]/i");
+ mTree->Branch("chfCalo"  ,tCHFCalo  ,"chfCalo[2]/F");
  mTree->Branch("met"      ,&tMET     ,"MET/F");
  mTree->Branch("sumet"    ,&tSumET   ,"SumET/F");
- mTree->Branch("nJets6"   ,&tNJets6  ,"Njets6/I");
- mTree->Branch("nJets15"   ,&tNJets15  ,"Njets15/I");
- mTree->Branch("nJets30"   ,&tNJets30  ,"Njets30/I");
- mTree->Branch("HLTBits"  ,tHLTBits  ,"HLTBits[6]/I");
+ mTree->Branch("nJets6"   ,&tNJets6  ,"Njets6/i");
+ mTree->Branch("nJets15"   ,&tNJets15  ,"Njets15/i");
+ mTree->Branch("nJets30"   ,&tNJets30  ,"Njets30/i");
+ mTree->Branch("HLTBits"  ,tHLTBits  ,"HLTBits[6]/i");
 
 
  calometerrcount=0;
