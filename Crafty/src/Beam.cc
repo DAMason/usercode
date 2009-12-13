@@ -13,7 +13,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Mon May 12 11:02:06 CDT 2008
-// $Id: Beam.cc,v 1.5 2009/12/07 06:13:34 dmason Exp $
+// $Id: Beam.cc,v 1.6 2009/12/09 07:28:43 dmason Exp $
 //
 //
 
@@ -36,6 +36,9 @@
 #include "DataFormats/JetReco/interface/CaloJetCollection.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"
 #include "DataFormats/JetReco/interface/JetExtendedAssociation.h"
+#include "RecoJets/JetAlgorithms/interface/JetIDHelper.h"
+
+#include "DataFormats/Common/interface/RefToBase.h"
 
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
@@ -81,6 +84,9 @@ class Beam : public edm::EDAnalyzer {
       virtual void endJob() ;
 
       // ----------member data ---------------------------
+
+
+      edm::ParameterSet parameters;
 
       typedef std::map<int,int> ThingCounter;
       ThingCounter eventsPerRunCounter;
@@ -164,6 +170,8 @@ class Beam : public edm::EDAnalyzer {
       edm::Service<TFileService> fs;
 
 
+      reco::helper::JetIDHelper *jetID;
+
       InputTag triggerResultsTag;
       InputTag alternateTriggerResultsTag;
 
@@ -179,6 +187,8 @@ class Beam : public edm::EDAnalyzer {
       unsigned int tNJets6,tNJets15,tNJets30;
       unsigned int tNtrkVx[2],tNtrkCalo[2];
       float tCHFVx[2],tCHFCalo[2];
+      float tfHPD[2],tfRBX[2];
+      unsigned int tn90Hits[2];
 };
 
 //
@@ -196,7 +206,7 @@ Beam::Beam(const edm::ParameterSet& iConfig)
 
 {
    //now do what ever initialization is needed
-
+  parameters=iConfig;
   triggerResultsTag=iConfig.getParameter<InputTag>("triggerResults");
   alternateTriggerResultsTag=iConfig.getParameter<InputTag>("alternateTriggerResults");
 }
@@ -444,7 +454,9 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   }
 
   Handle<CaloJetCollection> caloJets;
+
 //  iEvent.getByLabel("sisCone5CaloJets",caloJets);
+
   iEvent.getByLabel("iterativeCone5CaloJets",caloJets);
 
   Handle<JetExtendedAssociation::Container> jetExtender;
@@ -474,6 +486,9 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       tCHFVx[i]=0;
       tNtrkCalo[i]=0;
       tCHFCalo[i]=0;
+      tn90Hits[i]=0;
+      tfHPD[i]=0;
+      tfRBX[i]=0;
       }
 
 
@@ -518,6 +533,16 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         tCHFVx[jetInd]=(JetExtendedAssociation::tracksAtVertexP4(*jetExtender,*cal)).pt()/cal->et();
         tCHFCalo[jetInd]=(JetExtendedAssociation::tracksAtCaloP4(*jetExtender,*cal)).pt()/cal->et();
         }
+
+
+
+       jetID->calculate(iEvent,*cal);
+
+
+       tn90Hits[jetInd]=jetID->n90Hits();
+       tfHPD[jetInd]=jetID->fHPD();
+       tfRBX[jetInd]=jetID->fRBX();
+
 
       if (h_LCaloJetPt[currentRun]) h_LCaloJetPt[currentRun]->Fill(cal->et(),1.0);
       if (Jet30Accept && h_LCaloJetPtJet30trig[currentRun]) h_LCaloJetPtJet30trig[currentRun]->Fill(cal->et(),1.0);
@@ -614,6 +639,9 @@ Beam::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
               if (h_CaloMETRatioJet110Jet50trig[currentRun]) h_CaloMETRatioJet110Jet50trig[currentRun]->Fill(CaloMETRatio,1.0);
       }
   }
+
+
+
 
 
 
@@ -797,11 +825,16 @@ Beam::beginJob(const edm::EventSetup&)
  mTree->Branch("chfCalo"  ,tCHFCalo  ,"chfCalo[2]/F");
  mTree->Branch("met"      ,&tMET     ,"MET/F");
  mTree->Branch("sumet"    ,&tSumET   ,"SumET/F");
+ mTree->Branch("n90Hits"  ,&tn90Hits ,"n90Hits/i");
+ mTree->Branch("fHPD"     ,&tfHPD    ,"fHPD/F");
+ mTree->Branch("fRBX"     ,&tfRBX    ,"fRBX/F");
  mTree->Branch("nJets6"   ,&tNJets6  ,"Njets6/i");
  mTree->Branch("nJets15"   ,&tNJets15  ,"Njets15/i");
  mTree->Branch("nJets30"   ,&tNJets30  ,"Njets30/i");
  mTree->Branch("HLTBits"  ,tHLTBits  ,"HLTBits[6]/i");
 
+
+ jetID = new reco::helper::JetIDHelper(parameters.getParameter<ParameterSet>("jetIDHelperConfig"));
 
  calometerrcount=0;
 
@@ -811,6 +844,8 @@ Beam::beginJob(const edm::EventSetup&)
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 Beam::endJob() {
+
+ delete jetID;
 
 }
 
