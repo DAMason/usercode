@@ -13,47 +13,11 @@
 //
 // Original Author:  David_Mason
 //         Created:  Sat Jan 29 15:42:27 CST 2011
-// $Id$
+// $Id: TreeMaker.cc,v 1.1 2011/01/29 21:45:21 dmason Exp $
 //
 //
 
-
-// system include files
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
-
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-//
-// class declaration
-//
-
-class TreeMaker : public edm::EDAnalyzer {
-   public:
-      explicit TreeMaker(const edm::ParameterSet&);
-      ~TreeMaker();
-
-
-   private:
-      virtual void beginJob() ;
-      virtual void analyze(const edm::Event&, const edm::EventSetup&);
-      virtual void endJob() ;
-
-      // ----------member data ---------------------------
-};
-
-//
-// constants, enums and typedefs
-//
-
-//
-// static data member definitions
-//
+#include "DMason/TreeMaker/interface/TreeMaker.h"
 
 //
 // constructors and destructor
