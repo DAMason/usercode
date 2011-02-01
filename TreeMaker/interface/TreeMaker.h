@@ -14,7 +14,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Sat Jan 29 15:42:27 CST 2011
-// $Id: TreeMaker.h,v 1.1 2011/01/29 22:44:10 dmason Exp $
+// $Id: TreeMaker.h,v 1.2 2011/01/31 01:25:38 dmason Exp $
 //
 //
 
@@ -63,9 +63,6 @@
 #include "DataFormats/JetReco/interface/CaloJetCollection.h"
 
 // Jet corrections
-//#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
-//#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
-//#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 
 
@@ -73,7 +70,7 @@
 using namespace edm;
 using namespace std;
 
-
+// actually has a bit more than this but generally defines some useful things
 #include "DMason/TreeMaker/interface/TreeMakerBranchVars.h"
 
 
@@ -84,33 +81,34 @@ class TreeMaker : public edm::EDAnalyzer {
    public:
       explicit TreeMaker(const edm::ParameterSet&);
       ~TreeMaker();
-
+      virtual void beginJob() ;
+      static bool rawcorjetsorter( const RawCorJetPair& jetA, const RawCorJetPair& jetB){
+        return (jetA.corjet.pt() > jetB.corjet.pt());
+        }
 
    private:
-      virtual void beginJob() ;
       virtual void beginRun(const edm::Run&, const edm::EventSetup&);
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void bookTree();
       virtual bool fillTreeCut();
       virtual void flushVectors();
       virtual void endJob() ;
+
       // ----------member data ---------------------------
 
       bool IsMonteCarlo;
 
       string CaloJetTag;
-      string CaloJECL2Tag,CaloJECL3Tag,CaloJECResTag,CaloJECUncertTag;
       string CaloJECServiceName;
       string CaloJetIDTag,CaloJetExtenderTag;
       double CaloJetThresh;
 
       string PFJetTag;
-      string PFJECL2Tag,PFJECL3Tag,PFJECResTag,PFJECUncertTag;
       string PFJECServiceName;
       double PFJetThresh;
-      string JPTJetTag;
 
-      string JPTJECL2Tag,JPTJECL3Tag,JPTJECResTag,JPTJECUncertTag;
+      string JPTJetTag;
+      string JPTJECServiceName;
       double JPTJetThresh;
 
       string GenJetTag;
@@ -136,9 +134,6 @@ class TreeMaker : public edm::EDAnalyzer {
       EventBranches  EventData;
       CaloJetBranches CaloJetData;
 
-//      FactorizedJetCorrector *JEC,*PFJEC;
-//      JetCorrectionUncertainty *JetCorUncert,*PFJetCorUncert;
-
 
       typedef struct {
         float corpt;
@@ -160,10 +155,9 @@ class TreeMaker : public edm::EDAnalyzer {
         int n90Hits;
       } caloJetStruct;
 
+
+
     caloJetStruct tcaloJets[CaloJetSize];
-
-
-      typedef map<float,int> ptMapper;
 
 };
 

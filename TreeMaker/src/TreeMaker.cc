@@ -15,7 +15,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Sat Jan 29 15:42:27 CST 2011
-// $Id: TreeMaker.cc,v 1.2 2011/01/29 22:44:10 dmason Exp $
+// $Id: TreeMaker.cc,v 1.3 2011/01/31 01:25:38 dmason Exp $
 //
 //
 
@@ -27,27 +27,16 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
 {
    //now do what ever initialization is needed
   CaloJetTag      = iConfig.getUntrackedParameter<string>              ("CaloJetTag");
-  CaloJECL2Tag      = iConfig.getUntrackedParameter<string>              ("CaloJECL2Tag","");
-  CaloJECL3Tag      = iConfig.getUntrackedParameter<string>              ("CaloJECL3Tag","");
-  CaloJECResTag      = iConfig.getUntrackedParameter<string>              ("CaloJECResTag","");
-  CaloJECUncertTag      = iConfig.getUntrackedParameter<string>              ("CaloJECUncertTag","");
   CaloJECServiceName      = iConfig.getUntrackedParameter<string>              ("CaloJECServiceName","");
 
   CaloJetThresh      = iConfig.getUntrackedParameter<double>              ("CaloJetThresh",10.0);
 
   PFJetTag      = iConfig.getUntrackedParameter<string>              ("PFJetTag","");
-  PFJECL2Tag      = iConfig.getUntrackedParameter<string>              ("PFJECL2Tag","");
-  PFJECL3Tag      = iConfig.getUntrackedParameter<string>              ("PFJECL3Tag","");
-  PFJECResTag      = iConfig.getUntrackedParameter<string>              ("PFJECResTag","");
-  PFJECUncertTag      = iConfig.getUntrackedParameter<string>              ("PFJECUncertTag","");
   PFJECServiceName      = iConfig.getUntrackedParameter<string>              ("PFJECServiceName","");
   PFJetThresh      = iConfig.getUntrackedParameter<double>              ("PFJetThresh",10.0);
 
   JPTJetTag      = iConfig.getUntrackedParameter<string>              ("JPTJetTag","");
-  JPTJECL2Tag      = iConfig.getUntrackedParameter<string>            ("JPTJECL2Tag","");
-  JPTJECL3Tag      = iConfig.getUntrackedParameter<string>            ("JPTJECL3Tag","");
-  JPTJECResTag      = iConfig.getUntrackedParameter<string>           ("JPTJECResTag","");
-  JPTJECUncertTag      = iConfig.getUntrackedParameter<string>        ("JPTJECUncertTag","");
+  JPTJECServiceName      = iConfig.getUntrackedParameter<string>        ("JPTJECServiceName","");
   JPTJetThresh      = iConfig.getUntrackedParameter<double>           ("JPTJetThresh",10.0);
 
   CaloMETTag      = iConfig.getUntrackedParameter<string>              ("CaloMETTag","");
@@ -90,63 +79,6 @@ void
 TreeMaker::beginJob()
 {
 
-
-/*
-  if (CaloJECL2Tag.length()>0 && CaloJECL3Tag.length()>0) {
-    cout << "Setting up JEC's" << endl;
-    string JEC_PATH("CondFormats/JetMETObjects/data/");
-    edm::FileInPath fipL2(JEC_PATH+CaloJECL2Tag+".txt");
-    edm::FileInPath fipL3(JEC_PATH+CaloJECL3Tag+".txt");
-    edm::FileInPath fipRes(JEC_PATH+CaloJECResTag+".txt");
-    edm::FileInPath fipUncert(JEC_PATH+CaloJECUncertTag+".txt");
-    JetCorrectorParameters *L2JetCorPar = new JetCorrectorParameters(fipL2.fullPath());
-    JetCorrectorParameters *L3JetCorPar = new JetCorrectorParameters(fipL3.fullPath());
-    JetCorrectorParameters *ResJetCorPar = new JetCorrectorParameters(fipRes.fullPath());
-    JetCorUncert = new JetCorrectionUncertainty(fipUncert.fullPath());
-    cout<<fipL2.fullPath()<<endl;
-    cout<<fipL3.fullPath()<<endl;
-    if (!IsMonteCarlo) {
-      cout<<fipRes.fullPath()<<endl;
-      cout<<fipUncert.fullPath()<<endl;
-    }
-
-    vector<JetCorrectorParameters> vParam;
-    vParam.push_back(*L2JetCorPar);
-    vParam.push_back(*L3JetCorPar);
-    if (!IsMonteCarlo) vParam.push_back(*ResJetCorPar);
-    cout << vParam.size();
-    JEC = new FactorizedJetCorrector(vParam);
-
-  }
-
-  if (PFJECL2Tag.length()>0 && PFJECL3Tag.length()>0) {
-    cout << "Setting up PF JEC's" << endl;
-    string JEC_PATH("CondFormats/JetMETObjects/data/");    
-    edm::FileInPath fipPFL2(JEC_PATH+PFJECL2Tag+".txt");
-    edm::FileInPath fipPFL3(JEC_PATH+PFJECL3Tag+".txt");    
-    edm::FileInPath fipPFRes(JEC_PATH+PFJECResTag+".txt");
-    edm::FileInPath fipPFUncert(JEC_PATH+PFJECUncertTag+".txt");
-    JetCorrectorParameters *L2PFJetCorPar = new JetCorrectorParameters(fipPFL2.fullPath());
-    JetCorrectorParameters *L3PFJetCorPar = new JetCorrectorParameters(fipPFL3.fullPath());
- JetCorrectorParameters *ResPFJetCorPar = new JetCorrectorParameters(fipPFRes.fullPath());
-    PFJetCorUncert = new JetCorrectionUncertainty(fipPFUncert.fullPath());
-    cout<<fipPFL2.fullPath()<<endl;
-    cout<<fipPFL3.fullPath()<<endl;
-    if (!IsMonteCarlo) {
-      cout<<fipPFRes.fullPath()<<endl;
-      cout<<fipPFUncert.fullPath()<<endl;
-    }
-    vector<JetCorrectorParameters> vParam;
-    vParam.push_back(*L2PFJetCorPar);
-    vParam.push_back(*L3PFJetCorPar);
-    if (!IsMonteCarlo) vParam.push_back(*ResPFJetCorPar);
-    PFJEC = new FactorizedJetCorrector(vParam);
-
-  }
-  cout << "Done setting up JEC's" << endl;
-*/
-
-
   // Set up tree
 //  myTree = fs->make<TTree>(TreeName,TreeName);
   myTree = fs->make<TTree>("Test","Test");
@@ -154,9 +86,10 @@ TreeMaker::beginJob()
 
 }
 
-void TreeMaker::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
-{
 
+void 
+TreeMaker::beginRun(const edm::Run&, const edm::EventSetup&) 
+{
 
 }
 
@@ -184,57 +117,39 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
    Handle<reco::CaloJetCollection> caloJets;
    iEvent.getByLabel(CaloJetTag,caloJets);
+
    CaloJetData.nCaloJets=0;
-   if ((*caloJets).size() >0)
+   if (caloJets.isValid()&&((*caloJets).size() >0))
      {
-     // first loop through to get list of guys to keep
-     vector<int> indexlist;
-     vector<float> corpts,sortedcorpts;
-     ptMapper calopttoindex;
-
      const JetCorrector* calocorrector = JetCorrector::getJetCorrector(CaloJECServiceName,iSetup);
+     vector<RawCorJetPair> keptJets;
+     for(reco::CaloJetCollection::const_iterator jetit = caloJets->begin();jetit<caloJets->end();jetit++) {
+           RawCorJetPair thisjet;
+           thisjet.rawjet=*jetit;
+           thisjet.corjet=*jetit;
+           double jecscale=calocorrector->correction(thisjet.rawjet.p4()); 
+           thisjet.corjet.scaleEnergy(jecscale);  // as of now its a corrected jet...
+           if (thisjet.corjet.pt()>CaloJetThresh) keptJets.push_back(thisjet);
+        } // jet loop
+     // this should sort by corrected jet pt.
+     sort(keptJets.begin(),keptJets.end(),rawcorjetsorter);
+     CaloJetData.nCaloJets=keptJets.size();
+     for (unsigned int ijet=0;ijet<keptJets.size();ijet++) {
+     // want to keep 4 vectors of each raw and corrected.
+         CaloJetData.corpt[ijet]=keptJets[ijet].corjet.pt();
+         CaloJetData.corE[ijet]=keptJets[ijet].corjet.energy();
+         CaloJetData.corphi[ijet]=keptJets[ijet].corjet.phi();
+         CaloJetData.coreta[ijet]=keptJets[ijet].corjet.eta();
+         CaloJetData.rawpt[ijet]=keptJets[ijet].rawjet.pt();
+         CaloJetData.rawE[ijet]=keptJets[ijet].rawjet.energy();
+         CaloJetData.rawphi[ijet]=keptJets[ijet].rawjet.phi();
+         CaloJetData.raweta[ijet]=keptJets[ijet].rawjet.eta();
+         CaloJetData.emf[ijet]=keptJets[ijet].rawjet.emEnergyFraction();
 
-     for (unsigned int ind=0;ind<(*caloJets).size();ind++)
-       {
-       //cout << "index is: "<< ind << endl; 
-       float rawjetpt=(*caloJets)[ind].pt();
+         //cout << "corpt: " << CaloJetData.corpt[ijet] << " rawpt: " << CaloJetData.rawpt[ijet] << " coreta: " << keptJets[ijet].corjet.eta() << " raweta: " << keptJets[ijet].rawjet.eta() << endl;
 
-       double jecscale=calocorrector->correction((*caloJets)[ind].p4()); 
-       float corjetpt=rawjetpt*jecscale;
-//     correct here.
-       if (rawjetpt>CaloJetThresh) {
-           sortedcorpts.push_back(corjetpt);
-           calopttoindex[rawjetpt]=ind;
-         }
-       } // jet loop
-     sort(sortedcorpts.begin(),sortedcorpts.end());
-     reverse(sortedcorpts.begin(),sortedcorpts.end());
-     CaloJetData.nCaloJets=sortedcorpts.size();
-     for (unsigned int localind=0;localind<sortedcorpts.size();localind++) {
-        unsigned int jetind=calopttoindex[sortedcorpts[localind]];
-        //cout << "now index is -- local: " << localind << " jet: " << jetind << endl;
-        CaloJetData.rawpt[localind]=(*caloJets)[jetind].pt();
-        double jecscale=calocorrector->correction((*caloJets)[jetind].p4());
-        CaloJetData.corpt[localind]=(*caloJets)[jetind].pt()*jecscale;
-        CaloJetData.eta[localind]=(*caloJets)[jetind].eta();
-        cout << CaloJetData.rawpt[localind] << " cor: "  << CaloJetData.corpt[localind] << endl;
-      } // passed jet loop
-/*
-       caloJetStruct thisJet;
+       }
 
-       thisJet.rawpt=(*caloJets)[ind].pt();
-       cout << "jet: " << ind << " pt: " << thisJet.rawpt << endl;
-       thisJet.eta=(*caloJets)[ind].eta();
-       thisJet.phi=(*caloJets)[ind].phi();
-       thisJet.y=(*caloJets)[ind].y();
-       thisJet.rawE=(*caloJets)[ind].energy();
-       thisJet.n90=(*caloJets)[ind].n90();
-       thisJet.emf=(*caloJets)[ind].emEnergyFraction();
-       thisJet.EtaMoment=(*caloJets)[ind].etaetaMoment();
-       thisJet.PhiMoment=(*caloJets)[ind].phiphiMoment();
-       //if (thisJet.rawpt>CaloJetThresh) tcaloJets->push_back(thisJet);
-       tcaloJets->push_back(thisJet);
-*/
 
      }
 
@@ -280,10 +195,8 @@ TreeMaker::fillTreeCut() {
 
 
 
-
 return true;
 }
-
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
