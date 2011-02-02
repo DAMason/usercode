@@ -28,6 +28,10 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
    //now do what ever initialization is needed
   CaloJetTag      = iConfig.getUntrackedParameter<string>              ("CaloJetTag");
   CaloJECServiceName      = iConfig.getUntrackedParameter<string>              ("CaloJECServiceName","");
+  CaloJetDetails      = iConfig.getUntrackedParameter<bool>              ("CaloJetDetails",false);
+  CaloJetIDTag      = iConfig.getUntrackedParameter<string>              ("CaloJetIDTag","");
+  CaloJetExtenderTag      = iConfig.getUntrackedParameter<string>              ("CaloJetExtenderTag","");
+  CaloJECServiceName      = iConfig.getUntrackedParameter<string>              ("CaloJECServiceName","");
 
   CaloJetThresh      = iConfig.getUntrackedParameter<double>              ("CaloJetThresh",10.0);
 
@@ -115,18 +119,31 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 // CaloJets
 
-   Handle<reco::CaloJetCollection> caloJets;
-   iEvent.getByLabel(CaloJetTag,caloJets);
+   Handle<View<reco::CaloJet> > caloJets;
+   iEvent.getByLabel(CaloJetTag,"", caloJets);
+
+   Handle<reco::JetExtendedAssociation::Container> jetExtender;
+   iEvent.getByLabel(CaloJetExtenderTag,jetExtender);
+
+   Handle<ValueMap<reco::JetID> > jetID;
+   iEvent.getByLabel(CaloJetIDTag,jetID);
 
    CaloJetData.nCaloJets=0;
-   if (caloJets.isValid()&&((*caloJets).size() >0))
+   if (caloJets.isValid()&&(caloJets->size() >0))
      {
      const JetCorrector* calocorrector = JetCorrector::getJetCorrector(CaloJECServiceName,iSetup);
      vector<RawCorJetPair> keptJets;
-     for(reco::CaloJetCollection::const_iterator jetit = caloJets->begin();jetit<caloJets->end();jetit++) {
+     for(View<reco::CaloJet>::const_iterator jetit = caloJets->begin();jetit<caloJets->end();jetit++) {
+
+     unsigned int ind= jetit-caloJets->begin();
+     RefToBase<reco::CaloJet> jetRef = caloJets->refAt(ind);
+
            RawCorJetPair thisjet;
            thisjet.rawjet=*jetit;
            thisjet.corjet=*jetit;
+           thisjet.fHPD=(*jetID)[jetRef].fHPD;
+           thisjet.fRBX=(*jetID)[jetRef].fRBX;
+           thisjet.n90hits=(*jetID)[jetRef].n90Hits;
            double jecscale=calocorrector->correction(thisjet.rawjet.p4()); 
            thisjet.corjet.scaleEnergy(jecscale);  // as of now its a corrected jet...
            if (thisjet.corjet.pt()>CaloJetThresh) keptJets.push_back(thisjet);
@@ -145,7 +162,18 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
          CaloJetData.rawphi[ijet]=keptJets[ijet].rawjet.phi();
          CaloJetData.raweta[ijet]=keptJets[ijet].rawjet.eta();
          CaloJetData.emf[ijet]=keptJets[ijet].rawjet.emEnergyFraction();
+         CaloJetData.n90[ijet]=keptJets[ijet].rawjet.n90();
+         CaloJetData.HBE[ijet]=keptJets[ijet].rawjet.hadEnergyInHB();
+         CaloJetData.HEE[ijet]=keptJets[ijet].rawjet.hadEnergyInHE();
+         CaloJetData.HOE[ijet]=keptJets[ijet].rawjet.hadEnergyInHO();
+         CaloJetData.HFE[ijet]=keptJets[ijet].rawjet.hadEnergyInHF();
+         CaloJetData.EBE[ijet]=keptJets[ijet].rawjet.emEnergyInEB();
+         CaloJetData.EEE[ijet]=keptJets[ijet].rawjet.emEnergyInEE();
+         CaloJetData.EMHFE[ijet]=keptJets[ijet].rawjet.emEnergyInHF();
 
+         CaloJetData.n90Hits[ijet]=keptJets[ijet].n90hits;
+         CaloJetData.fHPD[ijet]=keptJets[ijet].fHPD;
+         CaloJetData.fRBX[ijet]=keptJets[ijet].fRBX;
          //cout << "corpt: " << CaloJetData.corpt[ijet] << " rawpt: " << CaloJetData.rawpt[ijet] << " coreta: " << keptJets[ijet].corjet.eta() << " raweta: " << keptJets[ijet].rawjet.eta() << endl;
 
        }
@@ -178,7 +206,7 @@ void
 TreeMaker::bookTree() {
 
 EventData.Register(myTree);
-CaloJetData.Register(myTree);
+CaloJetData.Register(myTree,CaloJetDetails);
 }
 
 void 

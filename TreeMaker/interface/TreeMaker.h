@@ -14,7 +14,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Sat Jan 29 15:42:27 CST 2011
-// $Id: TreeMaker.h,v 1.2 2011/01/31 01:25:38 dmason Exp $
+// $Id: TreeMaker.h,v 1.3 2011/02/01 03:38:59 dmason Exp $
 //
 //
 
@@ -59,8 +59,11 @@
 
 
 #include "DataFormats/Common/interface/Handle.h"
+#include "DataFormats/Common/interface/View.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"
 #include "DataFormats/JetReco/interface/CaloJetCollection.h"
+#include "DataFormats/JetReco/interface/JetID.h"
+#include "DataFormats/JetReco/interface/JetExtendedAssociation.h"
 
 // Jet corrections
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
@@ -101,6 +104,7 @@ class TreeMaker : public edm::EDAnalyzer {
       string CaloJetTag;
       string CaloJECServiceName;
       string CaloJetIDTag,CaloJetExtenderTag;
+      bool CaloJetDetails;
       double CaloJetThresh;
 
       string PFJetTag;
