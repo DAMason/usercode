@@ -14,7 +14,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Sat Jan 29 15:42:27 CST 2011
-// $Id: TreeMaker.h,v 1.3 2011/02/01 03:38:59 dmason Exp $
+// $Id: TreeMaker.h,v 1.4 2011/02/02 00:05:59 dmason Exp $
 //
 //
 
@@ -56,6 +56,8 @@
 
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
+
+#include "DataFormats/Math/interface/LorentzVector.h"
 
 
 #include "DataFormats/Common/interface/Handle.h"

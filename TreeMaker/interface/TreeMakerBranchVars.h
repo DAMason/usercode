@@ -23,6 +23,9 @@ public:
   int n90[CaloJetSize];
   int n90Hits[CaloJetSize];
   int nTowers[CaloJetSize];
+  float HT20,rawHT20;
+  float MHT20,rawMHT20;
+  float MHT20Phi,rawMHT20Phi;
   float rawpt[CaloJetSize];
   float rawE[CaloJetSize];
   float rawphi[CaloJetSize];
@@ -47,6 +50,13 @@ public:
 
   void Register(TTree *tree,bool detailed) {
   tree->Branch("nCaloJets"       , &nCaloJets  , "nCaloJets/I");
+  tree->Branch("CaloJet_HT20"    , &HT20       , "Calojet_HT20/F");
+  tree->Branch("CaloJet_MHT20"    , &MHT20       , "Calojet_MHT20/F");
+  tree->Branch("CaloJet_MHT20Phi"    , &MHT20Phi       , "Calojet_MHT20Phi/F");
+  tree->Branch("CaloJet_rawHT20"    , &rawHT20       , "Calojet_rawHT20/F");  
+  tree->Branch("CaloJet_rawMHT20"    , &rawMHT20       , "Calojet_rawMHT20/F");  
+  tree->Branch("CaloJet_rawMHT20Phi"    , &rawMHT20Phi       , "Calojet_rawMHT20Phi/F");
+
   tree->Branch("CaloJet_n90Hits"   , &n90Hits[0]   , "CaloJet_n90Hits[nCaloJets]/I");
   tree->Branch("CaloJet_rawpt"   , &rawpt[0]   , "CaloJet_rawpt[nCaloJets]/F");
   tree->Branch("CaloJet_rawpt"   , &rawpt[0]   , "CaloJet_rawpt[nCaloJets]/F");
