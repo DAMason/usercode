@@ -1,5 +1,6 @@
 
-#define CaloJetSize     100
+#define CaloJetSize     (100)
+#define PhotonSize      (100)
 
 
 class EventBranches {
@@ -59,7 +60,6 @@ public:
 
   tree->Branch("CaloJet_n90Hits"   , &n90Hits[0]   , "CaloJet_n90Hits[nCaloJets]/I");
   tree->Branch("CaloJet_rawpt"   , &rawpt[0]   , "CaloJet_rawpt[nCaloJets]/F");
-  tree->Branch("CaloJet_rawpt"   , &rawpt[0]   , "CaloJet_rawpt[nCaloJets]/F");
   tree->Branch("CaloJet_rawE"    , &rawE[0]    , "CaloJet_rawE[nCaloJets]/F");
   tree->Branch("CaloJet_rawphi"  , &rawphi[0]  , "CaloJet_rawphi[nCaloJets]/F");
   tree->Branch("CaloJet_raweta"  , &raweta[0]  , "CaloJet_raweta[nCaloJets]/F");
@@ -67,9 +67,10 @@ public:
   tree->Branch("CaloJet_corpt"   , &corpt[0]   , "CaloJet_corpt[nCaloJets]/F");
   tree->Branch("CaloJet_corE"    , &corE[0]    , "CaloJet_corE[nCaloJets]/F");
   tree->Branch("CaloJet_coreta"  , &coreta[0]  , "CaloJet_coreta[nCaloJets]/F");
+  tree->Branch("CaloJet_corphi"  , &corphi[0]  , "CaloJet_corphi[nCaloJets]/F");
   tree->Branch("CaloJet_fHPD"    , &fHPD[0]    , "CaloJet_fHPD[nCaloJets]/F");
-  tree->Branch("CaloJet_fRBX"    , &fRBX[0]    , "CaloJet_fRBX[nCaloJets]/F");
   if (detailed){
+    tree->Branch("CaloJet_fRBX"    , &fRBX[0]    , "CaloJet_fRBX[nCaloJets]/F");
     tree->Branch("CaloJet_n90"       , &n90[0]     , "CaloJet_n90[nCaloJets]/I");
     tree->Branch("CaloJet_etaMoment" , &etaMoment[0]  , "CaloJet_etaMoment[nCaloJets]/F");
     tree->Branch("CaloJet_phiMoment" , &phiMoment[0]  , "CaloJet_phiMoment[nCaloJets]/F");
@@ -83,7 +84,74 @@ public:
   }
 };
 
+class PhotonBranches {
+public:
+  int nPhotons;
+  float pt[PhotonSize];
+  float eta[PhotonSize];
+  float phi[PhotonSize];
+  float E[PhotonSize];
+  float ScE[PhotonSize];
+  float ScRawE[PhotonSize];
+  float ScEta[PhotonSize];
+  float ScPhi[PhotonSize];
+  float HoverE[PhotonSize];
+  float EcalIso[PhotonSize];
+  float HcalIso[PhotonSize];
+  float TrackIsoPtHol[PhotonSize];
+  float TrackIsoPtSol[PhotonSize];
+  int nTrackSol[PhotonSize];
+  int nTrackHol[PhotonSize];
+  float EcalIsoDR03[PhotonSize];
+  float HcalIsoDR03[PhotonSize];
+  float TrackIsoPtHolDR03[PhotonSize];
+  float TrackIsoPtSolDR03[PhotonSize];
+  int nTrackHolDR03[PhotonSize];
+  int nTrackSolDR03[PhotonSize];
+  float sigmaIetaIeta[PhotonSize];
+  float r9[PhotonSize];
+  int hasPixelSeed[PhotonSize];
+  int isEGGap[PhotonSize];
+  int isEB[PhotonSize];
+  int isEBEEGap[PhotonSize];
+  int isConv[PhotonSize];
+  
 
+  void Register(TTree *tree,bool detailed) {
+  tree->Branch("nPhotons"       , &nPhotons  , "nPhotons/I");
+  tree->Branch("Photon_pt"    , &pt[0]       , "Photon_pt[nPhotons]/F");
+  tree->Branch("Photon_E"    , &E[0]       , "Photon_E[nPhotons]/F");
+  tree->Branch("Photon_eta"    , &eta[0]       , "Photon_eta[nPhotons]/F");
+  tree->Branch("Photon_phi"    , &phi[0]       , "Photon_phi[nPhotons]/F");
+  tree->Branch("Photon_HoverE"    , &HoverE[0]       , "Photon_HoverE[nPhotons]/F");
+  tree->Branch("Photon_EcalIso"    , &EcalIso[0]       , "Photon_EcalIso[nPhotons]/F");
+  tree->Branch("Photon_HcalIso"    , &HcalIso[0]       , "Photon_HcalIso[nPhotons]/F");
+  tree->Branch("Photon_TrackIsoPtHol"    , &TrackIsoPtHol[0]       , "Photon_TrackIsoPtHol[nPhotons]/F");
+  tree->Branch("Photon_TrackIsoPtSol"    , &TrackIsoPtSol[0]       , "Photon_TrackIsoPtSol[nPhotons]/F");
+  tree->Branch("Photon_sigmaIetaIeta"    , &sigmaIetaIeta[0]       , "Photon_sigmaIetaIeta[nPhotons]/F");
+  tree->Branch("Photon_r9"    , &r9[0]       , "Photon_r9[nPhotons]/F");
+  tree->Branch("Photon_hasPixelSeed"    , &hasPixelSeed[0]       , "Photon_hasPixelSeed[nPhotons]/I");
+  tree->Branch("Photon_isEGGap"    , &isEGGap[0]       , "Photon_isEGGap[nPhotons]/I");
+  tree->Branch("Photon_isEB"    , &isEB[0]       , "Photon_isEB[nPhotons]/I");
+  tree->Branch("Photon_isEBEEGap"    , &isEBEEGap[0]       , "Photon_isEBEEGap[nPhotons]/I");
+  tree->Branch("Photon_isConv"    , &isConv[0]       , "Photon_isConv[nPhotons]/I");
+    if (detailed) {
+      tree->Branch("Photon_ScE"    , &ScE[0]       , "Photon_ScE[nPhotons]/F");
+      tree->Branch("Photon_ScRawE"    , &ScRawE[0]       , "Photon_ScRawE[nPhotons]/F");
+      tree->Branch("Photon_ScEta"    , &ScEta[0]       , "Photon_ScEta[nPhotons]/F");
+      tree->Branch("Photon_ScPhi"    , &ScPhi[0]       , "Photon_ScPhi[nPhotons]/F");
+      tree->Branch("Photon_nTrackHol"    , &nTrackHol[0]       , "Photon_nTrackHol[nPhotons]/I");
+      tree->Branch("Photon_nTrackSol"    , &nTrackSol[0]       , "Photon_nTrackSol[nPhotons]/I");
+      tree->Branch("Photon_EcalIsoDR03"    , &EcalIsoDR03[0]       , "Photon_EcalIsoDR03[nPhotons]/F");
+      tree->Branch("Photon_HcalIsoDR03"    , &HcalIsoDR03[0]       , "Photon_HcalIsoDR03[nPhotons]/F");
+      tree->Branch("Photon_TrackIsoPtHolDR03"    , &TrackIsoPtHolDR03[0]       , "Photon_TrackIsoPtHolDR03[nPhotons]/F");
+      tree->Branch("Photon_TrackIsoPtSolDR03"    , &TrackIsoPtSolDR03[0]       , "Photon_TrackIsoPtSolDR03[nPhotons]/F");
+      tree->Branch("Photon_nTrackHolDR03"    , &nTrackHolDR03[0]       , "Photon_nTrackHolDR03[nPhotons]/I");
+      tree->Branch("Photon_nTrackSolDR03"    , &nTrackSolDR03[0]       , "Photon_nTrackSolDR03[nPhotons]/I");
+    }      
+  }
+
+};
 
 
     typedef struct {

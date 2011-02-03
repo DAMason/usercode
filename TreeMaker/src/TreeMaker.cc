@@ -15,7 +15,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Sat Jan 29 15:42:27 CST 2011
-// $Id: TreeMaker.cc,v 1.5 2011/02/02 00:05:59 dmason Exp $
+// $Id: TreeMaker.cc,v 1.6 2011/02/02 06:44:09 dmason Exp $
 //
 //
 
@@ -48,6 +48,7 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
   TCMETTag      = iConfig.getUntrackedParameter<string>                ("TCMETTag","");
 
   PhotonTag     = iConfig.getUntrackedParameter<string>               ("PhotonTag","");
+  PhotonDetails     = iConfig.getUntrackedParameter<bool>               ("PhotonDetails",false);
   PhotonThresh  = iConfig.getUntrackedParameter<double>               ("PhotonThresh",5.0);
 
 
@@ -119,6 +120,7 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 // CaloJets
 
+
    Handle<View<reco::CaloJet> > caloJets;
    iEvent.getByLabel(CaloJetTag,"", caloJets);
 
@@ -136,21 +138,29 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    CaloJetData.nCaloJets=0;
    if (caloJets.isValid()&&(caloJets->size() >0))
      {
+     //fetch corrections
      const JetCorrector* calocorrector = JetCorrector::getJetCorrector(CaloJECServiceName,iSetup);
+
+     //have a class set up to hold both raw and corrected jets (and jet id) 
+     //together so that they can all be sorted together
      vector<RawCorJetPair> keptJets;
+     keptJets.clear();
      for(View<reco::CaloJet>::const_iterator jetit = caloJets->begin();jetit<caloJets->end();jetit++) {
 
-     unsigned int ind= jetit-caloJets->begin();
-     RefToBase<reco::CaloJet> jetRef = caloJets->refAt(ind);
+       unsigned int ind= jetit-caloJets->begin();
+       RefToBase<reco::CaloJet> jetRef = caloJets->refAt(ind);
 
-           RawCorJetPair thisjet;
-           thisjet.rawjet=*jetit;
-           thisjet.corjet=*jetit;
-           thisjet.fHPD=(*jetID)[jetRef].fHPD;
-           thisjet.fRBX=(*jetID)[jetRef].fRBX;
-           thisjet.n90hits=(*jetID)[jetRef].n90Hits;
-           double jecscale=calocorrector->correction(thisjet.rawjet.p4()); 
-           thisjet.corjet.scaleEnergy(jecscale);  // as of now its a corrected jet...
+       RawCorJetPair thisjet;
+       thisjet.rawjet=*jetit;
+       thisjet.corjet=*jetit;
+       thisjet.fHPD=(*jetID)[jetRef].fHPD;
+       thisjet.fRBX=(*jetID)[jetRef].fRBX;
+       thisjet.n90hits=(*jetID)[jetRef].n90Hits;
+
+
+       double jecscale=calocorrector->correction(thisjet.rawjet.p4()); 
+       thisjet.corjet.scaleEnergy(jecscale);  // as of now its a corrected 
+                                                  //jet -- scaled p4...
            //HT and MHT sums
            if (thisjet.corjet.pt()>20.0) {
             HT20+=thisjet.corjet.pt();
@@ -160,9 +170,12 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
             rawHT20+=thisjet.rawjet.pt();
             rawJet20P4sum+=thisjet.rawjet.p4();
            }
-           // store things here
+           // store things here if its worthy
            if (thisjet.corjet.pt()>CaloJetThresh) keptJets.push_back(thisjet);
         } // jet loop
+
+     // start filling in tree vars
+
      CaloJetData.HT20=HT20;
      CaloJetData.MHT20=Jet20P4sum.pt();
      CaloJetData.MHT20Phi=-Jet20P4sum.phi();
@@ -173,7 +186,6 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      sort(keptJets.begin(),keptJets.end(),rawcorjetsorter);
      CaloJetData.nCaloJets=keptJets.size();
      for (unsigned int ijet=0;ijet<keptJets.size();ijet++) {
-     // want to keep 4 vectors of each raw and corrected.
          CaloJetData.corpt[ijet]=keptJets[ijet].corjet.pt();
          CaloJetData.corE[ijet]=keptJets[ijet].corjet.energy();
          CaloJetData.corphi[ijet]=keptJets[ijet].corjet.phi();
@@ -205,7 +217,51 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 // CaloMET
 
 
-    
+// Photons
+
+  Handle<reco::PhotonCollection> Photons;
+  iEvent.getByLabel(PhotonTag, Photons);
+//  View<reco::Photon> Photons=*PhotonHandle;
+  
+  vector<reco::Photon> keptPhotons;
+     keptPhotons.clear();
+  for(reco::PhotonCollection::const_iterator photonit = Photons->begin();photonit<Photons->end();photonit++) {
+     //reco::Photon photon=*photonit;
+     if ((*photonit).et()>PhotonThresh) keptPhotons.push_back(*photonit);
+
+
+     }
+
+     sort(keptPhotons.begin(),keptPhotons.end(),photonsorter);
+     PhotonData.nPhotons=keptPhotons.size();
+     for (unsigned int ip=0;ip<keptPhotons.size();ip++) {
+       PhotonData.pt[ip]=keptPhotons[ip].et();  
+       PhotonData.E[ip]=keptPhotons[ip].energy();  
+       PhotonData.eta[ip]=keptPhotons[ip].eta();  
+       PhotonData.phi[ip]=keptPhotons[ip].phi();  
+       PhotonData.ScE[ip]=keptPhotons[ip].superCluster()->energy();  
+       PhotonData.ScRawE[ip]=keptPhotons[ip].superCluster()->rawEnergy();  
+       PhotonData.ScEta[ip]=keptPhotons[ip].superCluster()->position().eta();  
+       PhotonData.ScPhi[ip]=keptPhotons[ip].superCluster()->position().phi();  
+       PhotonData.HoverE[ip]=keptPhotons[ip].hadronicOverEm();  
+       PhotonData.EcalIso[ip]=keptPhotons[ip].ecalRecHitSumEtConeDR04();  
+       PhotonData.HcalIso[ip]=keptPhotons[ip].hcalTowerSumEtConeDR04();  
+       PhotonData.TrackIsoPtHol[ip]=keptPhotons[ip].trkSumPtHollowConeDR04();  
+       PhotonData.TrackIsoPtSol[ip]=keptPhotons[ip].trkSumPtSolidConeDR04();  
+       PhotonData.nTrackHol[ip]=keptPhotons[ip].nTrkHollowConeDR04();  
+       PhotonData.nTrackSol[ip]=keptPhotons[ip].nTrkSolidConeDR04();  
+       PhotonData.EcalIsoDR03[ip]=keptPhotons[ip].ecalRecHitSumEtConeDR03();  
+       PhotonData.HcalIsoDR03[ip]=keptPhotons[ip].hcalTowerSumEtConeDR03();  
+       PhotonData.TrackIsoPtHolDR03[ip]=keptPhotons[ip].trkSumPtHollowConeDR03();  
+       PhotonData.TrackIsoPtSolDR03[ip]=keptPhotons[ip].trkSumPtSolidConeDR03();  
+       PhotonData.nTrackHolDR03[ip]=keptPhotons[ip].nTrkHollowConeDR03();  
+       PhotonData.nTrackSolDR03[ip]=keptPhotons[ip].nTrkSolidConeDR03();  
+       PhotonData.sigmaIetaIeta[ip]=keptPhotons[ip].sigmaIetaIeta();  
+       PhotonData.r9[ip]=keptPhotons[ip].r9();  
+       PhotonData.hasPixelSeed[ip]=keptPhotons[ip].hasPixelSeed();  
+       //cout << "Photon: " << ip << "  " << keptPhotons[ip].et() << endl;
+
+     }
 
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
    Handle<ExampleData> pIn;
@@ -244,6 +300,10 @@ CaloJetData.rawMHT20=0;
 CaloJetData.MHT20Phi=0;
 CaloJetData.rawMHT20Phi=0;
 CaloJetData.Register(myTree,CaloJetDetails);
+
+PhotonData.nPhotons=0;
+PhotonData.Register(myTree,PhotonDetails);
+
 }
 
 void 

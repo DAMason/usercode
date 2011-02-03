@@ -14,7 +14,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Sat Jan 29 15:42:27 CST 2011
-// $Id: TreeMaker.h,v 1.4 2011/02/02 00:05:59 dmason Exp $
+// $Id: TreeMaker.h,v 1.5 2011/02/02 06:44:10 dmason Exp $
 //
 //
 
@@ -70,7 +70,10 @@
 // Jet corrections
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 
-
+// Photons
+#include "DataFormats/EgammaCandidates/interface/Photon.h"
+#include "DataFormats/EgammaCandidates/interface/PhotonFwd.h"
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterTools.h"
 
 using namespace edm;
 using namespace std;
@@ -89,6 +92,9 @@ class TreeMaker : public edm::EDAnalyzer {
       virtual void beginJob() ;
       static bool rawcorjetsorter( const RawCorJetPair& jetA, const RawCorJetPair& jetB){
         return (jetA.corjet.pt() > jetB.corjet.pt());
+        }
+      static bool photonsorter( const reco::Photon& pA, const reco::Photon& pB) {
+        return (pA.et() > pB.et());
         }
 
    private:
@@ -127,6 +133,7 @@ class TreeMaker : public edm::EDAnalyzer {
       vector<string> L1Triggers;
 
       string PhotonTag;
+      bool PhotonDetails;
       double PhotonThresh;
  
       string PFPhotonTag;
@@ -139,31 +146,7 @@ class TreeMaker : public edm::EDAnalyzer {
 
       EventBranches  EventData;
       CaloJetBranches CaloJetData;
-
-
-      typedef struct {
-        float corpt;
-        float rawpt;
-        float eta;
-        float phi;
-        float rawE;
-        float corE;
-        float y;
-        float emf;
-        float jecUnc;
-        float fHPD;
-        float fRBX;
-        float EtaMoment;
-        float PhiMoment;
-        int nTrkVx;
-        int nTrkCalo;
-        int n90;
-        int n90Hits;
-      } caloJetStruct;
-
-
-
-    caloJetStruct tcaloJets[CaloJetSize];
+      PhotonBranches PhotonData;
 
 };
 
