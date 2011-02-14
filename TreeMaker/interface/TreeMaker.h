@@ -14,7 +14,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Sat Jan 29 15:42:27 CST 2011
-// $Id: TreeMaker.h,v 1.5 2011/02/02 06:44:10 dmason Exp $
+// $Id: TreeMaker.h,v 1.6 2011/02/03 22:46:33 dmason Exp $
 //
 //
 
@@ -75,6 +75,26 @@
 #include "DataFormats/EgammaCandidates/interface/PhotonFwd.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterTools.h"
 
+// GenParticles
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
+
+// Triggers
+#include "CondFormats/L1TObjects/interface/L1GtTriggerMenu.h"
+#include "CondFormats/DataRecord/interface/L1GtTriggerMenuRcd.h"
+#include "L1Trigger/GlobalTriggerAnalyzer/interface/L1GtUtils.h"
+#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "DataFormats/HLTReco/interface/TriggerEvent.h"
+#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetupFwd.h"
+#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetup.h"
+#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
+#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMapRecord.h"
+#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMapFwd.h"
+#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMap.h"
+
+
+
 using namespace edm;
 using namespace std;
 
@@ -126,11 +146,20 @@ class TreeMaker : public edm::EDAnalyzer {
       string GenJetTag;
       double GenJetThresh;
 
+   
+
       string CaloMETTag,PFMETTag,TCMETTag;
 
       string TriggerProcessTag;
+      InputTag TriggerResultsTag;
+      InputTag L1GTReadoutTag;
+      InputTag L1GTObjectMapTag;
       vector<string> HLTTriggers;
       vector<string> L1Triggers;
+      vector<unsigned int> TrigIndex;
+      HLTConfigProvider HltConfig;   
+
+
 
       string PhotonTag;
       bool PhotonDetails;
@@ -147,7 +176,8 @@ class TreeMaker : public edm::EDAnalyzer {
       EventBranches  EventData;
       CaloJetBranches CaloJetData;
       PhotonBranches PhotonData;
-
+      GenInfoBranches GenData;
+      TrigBranches HLTData;
 };
 
 

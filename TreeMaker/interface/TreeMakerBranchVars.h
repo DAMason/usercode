@@ -1,7 +1,9 @@
 
 #define CaloJetSize     (100)
 #define PhotonSize      (100)
-
+#define GenParticles    (10000) //gigantic?
+#define GenDaughters    (10) //gigantic?
+#define Triggers        (100)
 
 class EventBranches {
 public:
@@ -152,6 +154,80 @@ public:
   }
 
 };
+
+class GenInfoBranches {
+public:
+  int   Size;
+  float mChi0;
+  float mGluino;
+  float mSquark;
+  float xsec;
+  int   Index[GenParticles];
+  int   Charge[GenParticles];
+  int   Status[GenParticles];
+  int   pdgId[GenParticles];
+  float Pt[GenParticles];
+  float Pz[GenParticles];
+  float Mass[GenParticles];
+  float Phi[GenParticles];
+  float Eta[GenParticles];
+  float Vx[GenParticles];
+  float Vy[GenParticles];
+  float Vz[GenParticles];
+  int   nMothers[GenParticles];
+  int   nDaughters[GenParticles];
+  int   momIndex[GenParticles];
+  int   dauIndex[GenParticles][GenDaughters];
+
+  void Register(TTree *root) {
+        root->Branch("GenInfo_Size"            	, &Size, "GenInfo_Size/I");
+        root->Branch("GenInfo_mChi0"            , &mChi0, "GenInfo_mChi0/F");
+        root->Branch("GenInfo_mGluino"          , &mGluino, "GenInfo_mGluino/F");
+        root->Branch("GenInfo_mSquark"          , &mSquark, "GenInfo_mSquark/F");
+        root->Branch("GenInfo_xsec"            	, &xsec, "GenInfo_xsec/F");
+        root->Branch("GenInfo_Index"           	, &Index[0], "GenInfo_Index[GenInfo_Size]/I");
+        root->Branch("GenInfo_Charge"        	, &Charge[0], "GenInfo_Charge[GenInfo_Size]/I");
+        root->Branch("GenInfo_Status"          	, &Status[0], "GenInfo_Status[GenInfo_Size]/I");
+        root->Branch("GenInfo_pdgId"           	, &pdgId[0], "GenInfo_pdgId[GenInfo_Size]/I");
+        root->Branch("GenInfo_Pt"               , &Pt[0], "GenInfo_Pt[GenInfo_Size]/F");
+        root->Branch("GenInfo_Pz"               , &Pz[0], "GenInfo_Pz[GenInfo_Size]/F");
+        root->Branch("GenInfo_Mass"            	, &Mass[0], "GenInfo_Mass[GenInfo_Size]/F");
+        root->Branch("GenInfo_Phi"             	, &Phi[0], "GenInfo_Phi[GenInfo_Size]/F");
+        root->Branch("GenInfo_Eta"             	, &Eta[0], "GenInfo_Eta[GenInfo_Size]/F");
+        root->Branch("GenInfo_Vx"              	, &Vx[0], "GenInfo_Vx[GenInfo_Size]/F");
+        root->Branch("GenInfo_Vy"               , &Vy[0], "GenInfo_Vy[GenInfo_Size]/F");
+        root->Branch("GenInfo_Vz"               , &Vz[0], "GenInfo_Vz[GenInfo_Size]/F");
+        root->Branch("GenInfo_nMothers"         , &nMothers[0], "GenInfo_nMothers[GenInfo_Size]/I");
+        root->Branch("GenInfo_nDaughters"      	, &nDaughters[0], "GenInfo_nDaughters[GenInfo_Size]/I");
+        root->Branch("GenInfo_momIndex"        	, &momIndex[0], "GenInfo_momIndex[GenInfo_Size]/I");
+        root->Branch("GenInfo_dauIndex"       	, &dauIndex[0][0],"GenInfo_dauIndex[GenInfo_Size][10]/I");
+  }
+};
+
+
+typedef struct 
+    {
+      int L1prescale;
+      int HLTprescale;
+      int fired;
+    } TrigStruct;
+
+
+class TrigBranches {
+public:
+  string TrigNames[Triggers];
+  TrigStruct trigState[Triggers]; 
+  void Register(TTree *tree,int iTrig) {
+       const char* branchname=TrigNames[iTrig].c_str();
+       tree->Branch(branchname, &trigState[iTrig],"L1prescale/I:HLTprescale/I:fired/I");
+  }
+
+};
+
+
+
+
+
 
 
     typedef struct {

@@ -4,9 +4,17 @@
 <use   name="FWCore/ServiceRegistry"/>
 <use   name="CommonTools/UtilAlgos"/>
 <use   name="DataFormats/Common"/>
+<use   name="DataFormats/Math"/>
 <use   name="DataFormats/JetReco"/>
 <use   name="CondFormats/JetMETObjects"/>
 <use   name="JetMETCorrections/Objects"/>
+<use   name="DataFormats/EgammaCandidates"/>
+<use   name="RecoEcal/EgammaCoreTools"/>
+<use   name="DataFormats/HepMCCandidate"/>
+<use   name="L1Trigger/GlobalTriggerAnalyzer"/>
+<use   name="HLTrigger/HLTcore"/>
+<use   name="DataFormats/HLTReco"/>
+<use   name="DataFormats/L1GlobalTrigger"/>
 <flags   EDM_PLUGIN="1"/>
 <export>
   <lib   name="1"/>

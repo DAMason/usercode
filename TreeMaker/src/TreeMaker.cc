@@ -15,7 +15,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Sat Jan 29 15:42:27 CST 2011
-// $Id: TreeMaker.cc,v 1.6 2011/02/02 06:44:09 dmason Exp $
+// $Id: TreeMaker.cc,v 1.7 2011/02/03 22:46:33 dmason Exp $
 //
 //
 
@@ -55,7 +55,10 @@ TreeMaker::TreeMaker(const edm::ParameterSet& iConfig)
   PFPhotonTag     = iConfig.getUntrackedParameter<string>               ("PFPhotonTag","");
   PFPhotonThresh  = iConfig.getUntrackedParameter<double>               ("PFPhotonThresh",5.0);
  
-  TriggerProcessTag = iConfig.getUntrackedParameter<string>            ("TriggerProcessTag","HLT");
+//  TriggerProcessTag = iConfig.getUntrackedParameter<string>            ("TriggerProcessTag","HLT");
+  TriggerResultsTag = iConfig.getUntrackedParameter<InputTag>            ("TriggerResultsTag");
+  L1GTReadoutTag = iConfig.getUntrackedParameter<InputTag>            ("L1GTObjectMapTag");
+  L1GTObjectMapTag = iConfig.getUntrackedParameter<InputTag>            ("L1GTObjectMapTag");
   HLTTriggers   = iConfig.getUntrackedParameter<vector<string> >        ("HLTTriggers");
   L1Triggers   = iConfig.getUntrackedParameter<vector<string> >        ("L1Triggers");
  
@@ -93,8 +96,37 @@ TreeMaker::beginJob()
 
 
 void 
-TreeMaker::beginRun(const edm::Run&, const edm::EventSetup&) 
+TreeMaker::beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup) 
 {
+
+   if (HLTTriggers.size()>0)
+     {
+       bool changed(true);
+       if (HltConfig.init(iRun,iSetup,TriggerResultsTag.process(),changed)) 
+         {
+            // if init returns TRUE, initialisation has succeeded!
+            TrigIndex.clear();
+            for(unsigned int i=0;i<HLTTriggers.size();i++)
+              {
+                cout<<HLTTriggers[i]<<" "<<HltConfig.triggerIndex(HLTTriggers[i])<<endl;
+                TrigIndex.push_back(HltConfig.triggerIndex(HLTTriggers[i]));
+                if (TrigIndex[i] == HltConfig.size())
+                  {
+                    string errorMessage="Requested TriggerName does not exist! -- "+HLTTriggers[i]+"\n";
+                  }
+              }
+            if (changed) 
+              {
+                std::cout<<"Run: "<<iRun.run()<<".....Changed HLTConfig"<<std::endl;
+              }
+         } 
+       else 
+         {
+           cout << " HLT config extraction failure with process name " << TriggerResultsTag.process()<<std::endl;
+         }
+     }
+
+
 
 }
 
@@ -115,6 +147,66 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    EventData.Event=iEvent.id().event();
    EventData.Bunch=iEvent.bunchCrossing();
 
+
+
+  Handle<TriggerResults> triggerResultsHandle;
+  //TriggerNames triggerNames;
+  if (HLTTriggers.size()>0)
+    {
+      int ErrFlag=0;
+      iEvent.getByLabel(TriggerResultsTag,triggerResultsHandle); 
+      if (!triggerResultsHandle.isValid())
+        {
+          string errorMessage = "TriggerResults is not present in file!\n";
+          cout << errorMessage << endl;
+          ErrFlag=-1;
+        }
+
+      for(unsigned int i=0;i<HLTTriggers.size();i++) 
+        {
+          HLTData.trigState[i].fired=ErrFlag;
+          HLTData.trigState[i].L1prescale=-1;
+          HLTData.trigState[i].HLTprescale=-1;
+          bool accept=false;
+
+          if (ErrFlag>-1) {
+
+          try {
+             unsigned int trIndex=HltConfig.triggerIndex(HLTTriggers[i]);
+              if (HltConfig.size()!=trIndex) {
+                accept = triggerResultsHandle->accept(trIndex);
+              }
+              else {
+                accept=false;
+                HLTData.trigState[i].fired=-1;
+              }
+            }
+            catch (...) {
+              accept=false;
+              HLTData.trigState[i].fired=-1;
+            }
+
+            if (accept) {
+              HLTData.trigState[i].fired=1;
+            }
+         std::pair<int,int> prescalepair;
+         try {
+            prescalepair=HltConfig.prescaleValues(iEvent,iSetup,HLTTriggers[i]
+);
+            //cout << "prescale for " << mTriggerNames[i] << " is " << prescalepair.first << " and " << prescalepair.second << endl;
+            HLTData.trigState[i].L1prescale=prescalepair.first;
+            HLTData.trigState[i].HLTprescale=prescalepair.second;
+            }
+          catch (...) {
+            HLTData.trigState[i].L1prescale=-1;
+            HLTData.trigState[i].HLTprescale=-1;
+          }
+
+
+          }//ErrFlag
+        }
+    }
+    
 
 
 
@@ -263,6 +355,131 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
      }
 
+
+
+  // get genParticles for MC
+  edm::Handle<reco::GenParticleCollection> genHandle;
+  iEvent.getByLabel("genParticles", genHandle);
+
+
+  //SUSY parms
+  edm::Handle<double> sparm_mChi0Handle;
+  edm::Handle<double> sparm_mGluinoHandle;
+  edm::Handle<double> sparm_mSquarkHandle;
+  edm::Handle<double> sparm_xsecHandle;
+
+  iEvent.getByLabel("susyScanChi0",       sparm_mChi0Handle); 
+  iEvent.getByLabel("susyScanMassGluino",     sparm_mGluinoHandle); 
+  iEvent.getByLabel("susyScanMassSquark", sparm_mSquarkHandle); 
+  iEvent.getByLabel("susyScanCrossSection",    sparm_xsecHandle); 
+
+  ////////////////////////////////////////////////
+  // start to fill genParticles Info for MC
+  ////////////////////////////////////////////////
+  memset(&GenData,0x00,sizeof(GenData));
+
+if(!iEvent.isRealData()){
+
+
+ if( sparm_mChi0Handle.isValid() ){
+    GenData.mChi0 = (float)*(sparm_mChi0Handle.product());
+  }
+  else{
+    GenData.mChi0 = -9999.;
+  }
+
+  if( sparm_mGluinoHandle.isValid() ){
+    GenData.mGluino = (float)*(sparm_mGluinoHandle.product());
+  }
+  else{
+    GenData.mGluino = -9999.;
+  }
+
+  if( sparm_mSquarkHandle.isValid() ){
+    GenData.mSquark = (float)*(sparm_mSquarkHandle.product());
+  }
+  else{
+    GenData.mSquark = -9999.;
+  }
+
+  if( sparm_xsecHandle.isValid() ){
+    GenData.xsec = (float)*(sparm_xsecHandle.product());
+  }
+  else{
+    GenData.xsec = -9999.;
+  }
+
+
+  std::vector<reco::GenParticle> PreselGens;
+  for(std::vector <reco::GenParticle>::const_iterator it_gen = genHandle->begin();
+        it_gen != genHandle->end(); it_gen++ ) {
+                    PreselGens.push_back(*it_gen);
+  }
+
+  for(std::vector <reco::GenParticle>::const_iterator it_gen = genHandle->begin();
+        it_gen != genHandle->end(); it_gen++ ) {
+
+        if (GenData.Size>=GenParticles) break;
+
+        GenData.Index           [GenData.Size] = GenData.Size;
+        GenData.Charge          [GenData.Size] = it_gen->charge();
+        GenData.Status          [GenData.Size] = it_gen->status();
+        GenData.pdgId           [GenData.Size] = it_gen->pdgId();
+        GenData.Pt           	[GenData.Size] = it_gen->pt();
+        GenData.Pz           	[GenData.Size] = it_gen->pz();
+        GenData.Mass           	[GenData.Size] = it_gen->mass();
+        GenData.Phi           	[GenData.Size] = it_gen->phi();
+        GenData.Eta           	[GenData.Size] = it_gen->eta();
+        GenData.Vx           	[GenData.Size] = it_gen->vx();
+        GenData.Vy           	[GenData.Size] = it_gen->vy();
+        GenData.Vz           	[GenData.Size] = it_gen->vz();
+
+        int NofDaughters   = it_gen->numberOfDaughters();
+        int NofMothers     = it_gen->numberOfMothers();
+        GenData.nDaughters    	[GenData.Size] = NofDaughters;
+        GenData.nMothers       	[GenData.Size] = NofMothers;
+
+        // fill mother index
+        GenData.momIndex        [GenData.Size] = -999;
+        if(NofMothers>0){
+	  for (int i=0;i<int(PreselGens.size());++i){
+		if(it_gen->mother(0)->pdgId()	==PreselGens[i].pdgId() &&
+		   it_gen->mother(0)->pt()	==PreselGens[i].pt() &&
+		   it_gen->mother(0)->pz()	==PreselGens[i].pz() &&
+		   it_gen->mother(0)->phi()	==PreselGens[i].phi() &&
+		   it_gen->mother(0)->vx()	==PreselGens[i].vx() &&
+                   it_gen->mother(0)->vy()	==PreselGens[i].vy() &&
+                   it_gen->mother(0)->vz()	==PreselGens[i].vz()) 
+			GenData.momIndex[GenData.Size] = (i<GenParticles)?i:-999;
+          }
+	}
+
+        // fill daughter index
+        for (int j=0;j< GenDaughters; ++j){
+	    GenData.dauIndex[GenData.Size][j] = -999;
+	}
+        if(NofDaughters>0){
+	  for (int j=0;j< int((NofDaughters<GenDaughters)?NofDaughters:GenDaughters); ++j){
+             for (int i=0;i<int(PreselGens.size());++i){
+                if(it_gen->daughter(j)->pdgId()	==PreselGens[i].pdgId() &&
+                   it_gen->daughter(j)->pt()	==PreselGens[i].pt() &&
+                   it_gen->daughter(j)->pz()	==PreselGens[i].pz() &&
+                   it_gen->daughter(j)->phi()	==PreselGens[i].phi() &&
+		   it_gen->daughter(j)->vx()	==PreselGens[i].vx() &&
+                   it_gen->daughter(j)->vy()	==PreselGens[i].vy() &&
+                   it_gen->daughter(j)->vz()	==PreselGens[i].vz())
+                        GenData.dauIndex[GenData.Size][j] = (i<GenParticles)?i:-999;
+             }
+
+	  } 
+        }
+
+        GenData.Size++;
+  } //Fill the GenParticle TTree
+
+}
+
+
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
    Handle<ExampleData> pIn;
    iEvent.getByLabel("example",pIn);
@@ -304,6 +521,14 @@ CaloJetData.Register(myTree,CaloJetDetails);
 PhotonData.nPhotons=0;
 PhotonData.Register(myTree,PhotonDetails);
 
+ GenData.Size=0;
+ GenData.Register(myTree);
+
+for(unsigned int i=0;i<HLTTriggers.size();i++)
+    {
+    HLTData.TrigNames[i]=HLTTriggers[i];
+    HLTData.Register(myTree,i);
+    }
 }
 
 void 
