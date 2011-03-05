@@ -15,7 +15,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Sat Jan 29 15:42:27 CST 2011
-// $Id: TreeMaker.cc,v 1.7 2011/02/03 22:46:33 dmason Exp $
+// $Id: TreeMaker.cc,v 1.8 2011/02/14 04:06:49 dmason Exp $
 //
 //
 
@@ -207,6 +207,24 @@ TreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
     }
     
+
+
+// CaloMET
+
+  Handle<reco::CaloMETCollection> met;
+  iEvent.getByLabel(CaloMETTag,met);
+  if (met->size() == 0)
+    {
+      EventData.CaloMET   = -1;
+      EventData.CaloSumET = -1;
+      EventData.CaloMETPhi = 0;
+    }
+  else
+    {
+      EventData.CaloMET   = (*met)[0].et();
+      EventData.CaloSumET = (*met)[0].sumEt();
+      EventData.CaloMETPhi = (*met)[0].phi();
+    }
 
 
 
