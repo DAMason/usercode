@@ -11,12 +11,18 @@ public:
   int Lumi;
   int Bunch;
   int Event;
+  float CaloSumET;
+  float CaloMET;
+  float CaloMETPhi;
 
   void Register(TTree *tree) {
     tree->Branch("Run"       , &Run    ,  "Run/I");
     tree->Branch("Lumi"      , &Lumi   ,  "Lumi/I");
     tree->Branch("Bunch"     , &Bunch  ,  "Bunch/I");
     tree->Branch("Event"     , &Event  ,  "Event/I");
+    tree->Branch("CaloMET"   , &CaloMET,  "CaloMET/F");
+    tree->Branch("CaloSumET" , &CaloSumET,"CaloSumET/F");
+    tree->Branch("CaloMETPhi" , &CaloSumET,"CaloSumET/F");
   }
 };
 

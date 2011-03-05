@@ -14,7 +14,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Sat Jan 29 15:42:27 CST 2011
-// $Id: TreeMaker.h,v 1.6 2011/02/03 22:46:33 dmason Exp $
+// $Id: TreeMaker.h,v 1.7 2011/02/14 04:06:49 dmason Exp $
 //
 //
 
@@ -93,6 +93,9 @@
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMapFwd.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMap.h"
 
+// CaloMET
+#include "DataFormats/METReco/interface/CaloMET.h"
+#include "DataFormats/METReco/interface/CaloMETCollection.h"
 
 
 using namespace edm;
