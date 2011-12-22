@@ -11,12 +11,14 @@ public:
   int Lumi;
   int Bunch;
   int Event;
+  float rho;
 
   void Register(TTree *tree) {
     tree->Branch("Run"       , &Run    ,  "Run/I");
     tree->Branch("Lumi"      , &Lumi   ,  "Lumi/I");
     tree->Branch("Bunch"     , &Bunch  ,  "Bunch/I");
     tree->Branch("Event"     , &Event  ,  "Event/I");
+    tree->Branch("rho"       , &rho  ,  "rho/F");
   }
 };
 
@@ -51,6 +53,9 @@ public:
   float ScRawE[PhotonSize];
   float ScEta[PhotonSize];
   float ScPhi[PhotonSize];
+  float CaloX[PhotonSize];
+  float CaloY[PhotonSize];
+  float CaloZ[PhotonSize];
   float HoverE[PhotonSize];
   float EcalIso[PhotonSize];
   float HcalIso[PhotonSize];
@@ -96,6 +101,9 @@ public:
       tree->Branch("Photon_ScRawE"    , &ScRawE[0]       , "Photon_ScRawE[nPhotons]/F");
       tree->Branch("Photon_ScEta"    , &ScEta[0]       , "Photon_ScEta[nPhotons]/F");
       tree->Branch("Photon_ScPhi"    , &ScPhi[0]       , "Photon_ScPhi[nPhotons]/F");
+      tree->Branch("Photon_CaloX"    , &CaloX[0]       , "Photon_CaloX[nPhotons]/F");
+      tree->Branch("Photon_CaloY"    , &CaloY[0]       , "Photon_CaloY[nPhotons]/F");
+      tree->Branch("Photon_CaloZ"    , &CaloZ[0]       , "Photon_CaloZ[nPhotons]/F");
       tree->Branch("Photon_nTrackHol"    , &nTrackHol[0]       , "Photon_nTrackHol[nPhotons]/I");
       tree->Branch("Photon_nTrackSol"    , &nTrackSol[0]       , "Photon_nTrackSol[nPhotons]/I");
       tree->Branch("Photon_EcalIsoDR03"    , &EcalIsoDR03[0]       , "Photon_EcalIsoDR03[nPhotons]/F");

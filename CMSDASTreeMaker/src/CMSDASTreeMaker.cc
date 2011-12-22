@@ -17,7 +17,7 @@
 //
 // Original Author:  David_Mason
 //         Created:  Sat Jan 29 15:42:27 CST 2011
-// $Id: CMSDASTreeMaker.cc,v 1.9 2011/03/05 16:54:31 dmason Exp $
+// $Id: CMSDASTreeMaker.cc,v 1.1 2011/12/20 00:03:45 dmason Exp $
 //
 //
 
@@ -141,6 +141,15 @@ CMSDASTreeMaker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    EventData.Lumi=iEvent.luminosityBlock();
    EventData.Event=iEvent.id().event();
    EventData.Bunch=iEvent.bunchCrossing();
+
+   try{
+     edm::Handle<double>rho;
+     iEvent.getByLabel("kt6PFJets","rho",rho);
+     EventData.rho=*rho;
+     }
+    catch (cms::Exception& e) {
+       edm::LogError("CMSDASTreeMaker") << "Rho not available!";
+    }
 
 
  if (IsMonteCarlo) {
@@ -328,6 +337,9 @@ if(!iEvent.isRealData()){
        PhotonData.eta[ip]=keptPhotons[ip].eta();  
        PhotonData.phi[ip]=keptPhotons[ip].phi();  
        PhotonData.ScE[ip]=keptPhotons[ip].superCluster()->energy();  
+       PhotonData.CaloX[ip]=keptPhotons[ip].caloPosition().x();
+       PhotonData.CaloY[ip]=keptPhotons[ip].caloPosition().y();
+       PhotonData.CaloZ[ip]=keptPhotons[ip].caloPosition().z();
        PhotonData.ScRawE[ip]=keptPhotons[ip].superCluster()->rawEnergy();  
        PhotonData.ScEta[ip]=keptPhotons[ip].superCluster()->position().eta();  
        PhotonData.ScPhi[ip]=keptPhotons[ip].superCluster()->position().phi();  
