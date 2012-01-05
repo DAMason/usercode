@@ -6,6 +6,7 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 # calculate rho & jetArea
 process.load('RecoJets.Configuration.RecoPFJets_cff')
@@ -24,7 +25,7 @@ process.source = cms.Source("PoolSource",
 #         'file:///uscmst1b_scratch/lpc1/old_scratch/lpceg/yurii/iraklis/CMSDAS2012/multiphoton-Mpp200.root'
     )
 )
-process.TFileService = cms.Service("TFileService",fileName = cms.string('TestTreephoton20.root'))
+process.TFileService = cms.Service("TFileService",fileName = cms.string('TestTree.root'))
 
 process.GlobalTag.globaltag = 'GR_R_42_V21A::All'
 
@@ -36,7 +37,7 @@ process.tuple = cms.EDAnalyzer('CMSDASTreeMaker',
      L1GTReadoutTag = cms.untracked.InputTag('gtDigis'),
      L1GTObjectMapTag = cms.untracked.InputTag('hltL1GtObjectMap','','HLT'),
      L1Triggers =   cms.untracked.vstring(),
-     HLTTriggers  =   cms.untracked.vstring('HLT_Photon30_CaloIdVL','HLT_Photon50_CaloIdVL','HLT_Photon75_CaloIdVL','HLT_Photon90_CaloIdVL','HLT_Photon135'),
+     HLTTriggers  =   cms.untracked.vstring('HLT_Photon30_CaloIdVL','HLT_Photon50_CaloIdVL','HLT_Photon75_CaloIdVL','HLT_Photon90_CaloIdVL','HLT_Photon30_CaloIdVL_IsoL','HLT_Photon50_CaloIdVL_IsoL','HLT_Photon75_CaloIdVL_IsoL','HLT_Photon90_CaloIdVL_IsoL','HLT_Photon135','HLT_Photon36_Photon22','HLT_Photon36_CaloIdVL_Photon22_CaloIdVL','HLT_Photon36_CaloIdL_IsoVL_Photon22_CaloIdL_IsoVL','HLT_Photon36_CaloIdL_IsoVL_Photon22_R9Id','HLT_Photon36_CaloIdL_IsoVL_Photon22','HLT_Photon36_R9Id_Photon22_CaloIdL_IsoVL','HLT_Photon36_R9Id_Photon22_R9Id'),
      PhotonTag   =   cms.untracked.string('photons'),
      PhotonDetails   =   cms.untracked.bool(True),
      PhotonThresh=   cms.untracked.double(20.0),
